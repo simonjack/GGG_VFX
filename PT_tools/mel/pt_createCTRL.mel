@@ -1,0 +1,125 @@
+proc string pt_arrowSHAPE(string $ctrlNAME)
+{
+	string $crv1 = `curve -d 1 -p -1 0 1 -p -1 0 -2 -p 1 0 -2 -p 1 0 1 -p 2 0 1 -p 0 0 3 -p -2 0 1 -p -1 0 1 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 ` ;			
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlNAME`;
+	return $rnmCrv;
+}
+proc string pt_boxSHAPE(string $ctrlNAME)
+{
+	string $crv1 = `curve -d 1 -p -0.5 0.5 0.5 -p -0.5 0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 0.5 0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 -0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 -0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 -0.5 0.5 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16` ;					
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlNAME`;
+	return $rnmCrv;
+}
+proc string pt_circleSHAPE(string $ctrlNAME)
+{
+	string $crv1[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	select $crv1[0];
+	CenterPivot;
+	string $rnmCrv = `rename $crv1[0] $ctrlNAME`;
+	return $rnmCrv;
+}
+proc string pt_crossSHAPE(string $ctrlNAME)
+{
+	string $crv1 = `curve -d 1 -p -1 0 1 -p -3 0 1 -p -3 0 2 -p -5 0 0 -p -3 0 -2 -p -3 0 -1 -p -1 0 -1 -p -1 0 -3 -p -2 0 -3 -p 0 0 -5 -p 2 0 -3 -p 1 0 -3 -p 1 0 -1 -p 3 0 -1 -p 3 0 -2 -p 5 0 0 -p 3 0 2 -p 3 0 1 -p 1 0 1 -p 1 0 3 -p 2 0 3 -p 0 0 5 -p -2 0 3 -p -1 0 3 -p -1 0 1 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16 -k 17 -k 18 -k 19 -k 20 -k 21 -k 22 -k 23 -k 24` ;
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlNAME`;
+	return $rnmCrv;
+}
+proc string pt_diamondSHAPE(string $ctrlNAME)
+{
+	string $crv1 = `curve -d 1 -p 0.0 1 0 -p 0.0 0 1 -p 0.0 -1 0 -p 0.0 0 -1 -p 0.0 1 0 -p 1.0 0 0 -p 0.0 -1 0 -p -1.0 0 0 -p 0.0 1 0 -p 1.0 0 0 -p 0.0 0 1 -p -1.0 0 0 -p 0.0 0 -1 -p 1.0 0 0 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13` ;
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlNAME`;
+	return $rnmCrv;
+}
+proc string pt_rotateSHAPE(string $ctrlNAME)
+{
+	string $crv1[]= `circle -nr 0 1 0 -c 0 0 0 -sw 180 -r 2`;
+	string $crv2[]= `circle -nr 0 1 0 -c 0 0 0 -sw 180 -r 4`;
+	string $arrow01= `curve -d 1 -p 0 0 -2 -p 0 0 -1 -p 2 0 -3 -p 0 0 -5 -p 0 0 -4 -k 0 -k 1 -k 2 -k 3 -k 4` ;
+	string $arrow02= `curve -d 1 -p 0 0 2 -p 0 0 1 -p 2 0 3 -p 0 0 5 -p 0 0 4 -k 0 -k 1 -k 2 -k 3 -k 4` ;
+
+	string $relCrv1[] = `listRelatives -shapes $crv1[0]`;
+	string $relCrv2[] = `listRelatives -shapes $crv2[0]`;
+	string $relArrow1[] = `listRelatives -shapes $arrow01`;
+	string $relArrow2[] = `listRelatives -shapes $arrow02`;
+
+	parent -r -shape $relCrv2[0] $crv1[0];
+	parent -r -shape $relArrow1[0] $crv1[0];
+	parent -r -shape $relArrow2[0] $crv1[0];
+
+	delete $crv2[0] $arrow01 $arrow02;
+	string $rnmCrv = `rename $crv1[0] $ctrlNAME`;
+	return $rnmCrv;
+}
+proc string pt_sphericalSHAPE(string $ctrlNAME)
+{
+	//Create curves
+	string $crv1[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	string $crv2[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	string $crv3[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	//Rotate curves to look like a joint
+	rotate -r -os 90 0 0 $crv2[0];
+	rotate -r -os 0 0 90 $crv3[0];
+	//Freeze the rotated curves
+	select $crv2[0]; select -add $crv3[0];
+	makeIdentity -apply 1 -t 1 -r 1 -s 1 ;
+	//Parent shapes of curves 2 and 3 to curve 1
+	string $relCrv2[] = `listRelatives -shapes $crv2[0]`;
+	string $relCrv3[] = `listRelatives -shapes $crv3[0]`;
+	parent -r -shape $relCrv2[0] $crv1[0];
+	parent -r -shape $relCrv3[0] $crv1[0];
+	//Delete the trns node of curves 2 and 3
+	select $crv2[0]; select -add $crv3[0]; doDelete;
+	//Rename the joint curve
+	string $rnmCrv = `rename $crv1[0] $ctrlNAME`;
+	//Delete history on joint curve
+	select $rnmCrv; DeleteHistory;
+	return $rnmCrv;
+}
+global proc string[] pt_createCTRL(string $baseName, int $ctrlType)
+{
+	string $rnmCrv;
+	string $locNAME = ("loc_"+$baseName);
+	string $grpNAME =  ("grp_"+$baseName);
+	string $ctrlNAME =  ("ctrl_"+$baseName);
+	if ($ctrlType == 0)
+	{
+	$rnmCrv = pt_arrowSHAPE($ctrlNAME);
+	}else if ($ctrlType == 1)
+	{
+	$rnmCrv = pt_boxSHAPE($ctrlNAME);
+	}else if ($ctrlType == 2)
+	{
+	$rnmCrv = pt_circleSHAPE($ctrlNAME);
+	}else if ($ctrlType == 3)
+	{
+	$rnmCrv = pt_crossSHAPE($ctrlNAME);
+	}else if ($ctrlType == 4)
+	{
+	$rnmCrv = pt_diamondSHAPE($ctrlNAME);
+	}else if ($ctrlType == 5)
+	{
+	$rnmCrv = pt_rotateSHAPE($ctrlNAME);
+	}else if ($ctrlType == 6)
+	{
+	$rnmCrv = pt_sphericalSHAPE($ctrlNAME);
+	}else
+	{
+	error "no control setup for that type!";
+	}	
+	
+	spaceLocator -n $locNAME;
+	group -em -n $grpNAME;
+	
+	parent $rnmCrv $grpNAME;
+	parent $grpNAME $locNAME;
+	string $ctrlComponents[] = {$locNAME,$grpNAME,$ctrlNAME};
+	return $ctrlComponents;
+}

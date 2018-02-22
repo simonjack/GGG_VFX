@@ -1,0 +1,26 @@
+global proc pt_jointLabeler(){
+	string $selection[] = `ls -sl`;
+	for ($sel in $selection)
+	{	
+		int $removeLetters = 0;
+		setAttr ($sel+".type") 18;
+		if (`gmatch $sel "*jnt_L*"` == 1)
+		{
+			setAttr ($sel+".side") 1;
+			$removeLetters = 6;
+		} else if (`gmatch $sel "*jnt_R*"` == 1)
+		{
+			setAttr ($sel+".side") 2;
+			$removeLetters = 6;
+		} else 
+		{
+			setAttr ($sel+".side") 0;
+			$removeLetters = 4;
+		}
+		//print ($removeLetters+"\n");
+		string $bodyPart = `substring $sel ($removeLetters+1) (size($sel))`;
+		//print ($bodyPart+"\n");
+		
+		setAttr -type "string" ($sel+".otherType") $bodyPart;
+	}
+}

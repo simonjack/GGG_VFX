@@ -1,0 +1,45 @@
+global proc pt_alignPVT()
+	{
+		//align tool
+
+		string $selection[] = `ls -sl`;
+
+		string $target = $selection[0];
+		string $obj2align = $selection[1];
+
+		float $rotX;
+		float $rotY;
+		float $rotZ; 
+
+		float $transX; 
+		float $transY; 
+		float $transZ; 
+
+		if (size($selection)!=2)
+			{
+				error "select 2 objects dick 'ed. \n";
+			}
+
+		group -em -name locationFinder;
+
+		parentConstraint $target locationFinder;
+
+		float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+		float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`;
+		
+		setAttr ($obj2align + ".rotatePivotX") $position[0];
+		setAttr ($obj2align + ".rotatePivotY") $position[1];
+		setAttr ($obj2align + ".rotatePivotZ") $position[2];
+		
+		string $objParent[] = `listRelatives -p $obj2align`;
+		
+		parent $obj2align locationFinder;
+		
+		makeIdentity -apply true -t 0 -r 1 -s 0 -n 0 $obj2align;
+		
+		parent $obj2align $objParent[0];
+		
+		delete locationFinder;
+
+		select $obj2align;
+	}

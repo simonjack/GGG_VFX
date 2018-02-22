@@ -1,0 +1,130 @@
+global proc createCTRL(){
+    string $controlTypes[] = `textScrollList -query -selectItem ctrlScrollList`;
+    string $mOffset = `radioCollection -query -select maintainONorOff`;
+    string $customName = `textField -query -text nameOverride`;
+    string $ctrlName = "default";
+    int $offset;
+	int $ctrlTYPE;
+	string $defaultName = `radioCollection -query -select defaultOrCustomName`;
+    int $pointConst = `checkBox -q -v pointCHECK`;
+    int $orientConst = `checkBox -q -v orientCHECK`;
+    int $parentConst = `checkBox -q -v parentCHECK`;
+    int $xAxis = `checkBox -q -v xCHECK`;
+    int $yAxis = `checkBox -q -v yCHECK`;
+    int $zAxis = `checkBox -q -v zCHECK`;
+
+    if ($mOffset ==  "maintainON")
+    {
+       $offset = 1; 
+    }   else
+    {
+        $offset = 0;
+    }
+    if ($controlTypes[0] == "Arrow")
+    {
+        $ctrlTYPE = 0;
+		$ctrlName = "ARROW";
+    }
+	if ($controlTypes[0] == "Cube")
+    {
+        $ctrlTYPE = 1;
+		$ctrlName = "BOX";
+    }
+    if ($controlTypes[0] == "Circular")
+    {
+        $ctrlTYPE = 2;
+		$ctrlName = "CIRCLE";
+    }
+    if ($controlTypes[0] == "Cross")
+    {
+        $ctrlTYPE = 3;
+		$ctrlName = "CROSS";
+    }
+    if ($controlTypes[0] == "Diamond")
+    {
+        $ctrlTYPE = 4;
+		$ctrlName = "DIAMOND";
+    }
+    if ($controlTypes[0] == "Rotate")
+    {
+        $ctrlTYPE = 5;
+		$ctrlName = "ROTATE";
+    }
+    if ($controlTypes[0] == "Sphere")
+    {
+        $ctrlTYPE = 6;
+		$ctrlName = "SPHERICAL";
+    }
+	string $selection[] = `ls -sl`;
+	if(size($selection)>0)
+	{
+		$ctrlName = $selection[0];
+	}
+	if ($defaultName != "defaultName")
+    {
+        $ctrlName = $customName;
+    } 
+	print ("\n Controller name will be: ctrl_" + $ctrlName +"\n");
+	int $constraintSetup[] = { $ctrlTYPE, $offset, $pointConst, $orientConst, $parentConst, $xAxis, $yAxis, $zAxis};
+    pt_setupCTRL($constraintSetup); 
+}
+
+global proc pt_constraintMENU()
+{
+	string $fmWindowName = "fmWindow10";
+
+			// check if the window already exists.
+			// Delete it and remove Preferences if necessary
+	  if(`window -ex $fmWindowName`)
+			{
+				deleteUI $fmWindowName;
+			}
+		   
+	  // create a window and store the name   
+	  window -title "CheckboxTest" "fmWindow10";
+	  frameLayout -collapsable false -label "Controller";
+			textScrollList -numberOfRows 8 -allowMultiSelection false
+				-append "Cube"
+				-append "Sphere"
+				-append "Diamond"
+				-append "Circular"
+				-append "Cross"
+				-append "Rotate"
+				-append "Arrow"
+				-selectItem "Cube"
+				-showIndexedItem 1
+				ctrlScrollList;
+			rowColumnLayout -numberOfColumns 3 ;
+			radioCollection maintainONorOff;		
+							// add some radio buttons to the collection
+							text - label "Maintain Offset";
+							radioButton -label "On" maintainON;
+							radioButton -label "Off" maintainOFF;
+			radioCollection -edit -select maintainOFF maintainONorOff;
+				setParent ..;			
+			
+			rowColumnLayout -numberOfColumns 3;
+				checkBox -label "POINT" pointCHECK;
+				checkBox -label "ORIENT" orientCHECK;
+				checkBox -label "PARENT" parentCHECK;
+				checkBox -label "X" -v 1 xCHECK;
+				checkBox -label "Y" -v 1 yCHECK;
+				checkBox -label "Z" -v 1 zCHECK;
+				setParent ..;  setParent ..;
+				
+			rowColumnLayout -numberOfColumns 3;
+				radioCollection defaultOrCustomName;		
+							// add some radio buttons to the collection
+							text - label "Use Default";
+							radioButton -label "Yes" defaultName;
+							radioButton -label "No" customName;
+    			radioCollection -edit -select defaultName defaultOrCustomName;
+			setParent ..;
+				text -label "Name Override:";
+				textField nameOverride;
+			setParent ..;
+			
+			columnLayout;
+				button -label "Create Controller(s)" - command "createCTRL";
+	  showWindow;
+ }

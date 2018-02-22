@@ -1,0 +1,32 @@
+global proc pt_ShoulderRig_clean()
+{
+	if (!`objExists MuscleLocating`)
+	{
+		error "No MuscleLocating node! (Rig is either not imported or has already been cleaned)";
+	}else
+	{
+		string $musclePositioners[] = {	"ctrl_HP_L_ClavicleStart",
+										"ctrl_HP_L_ClavicleEnd", 
+										"ctrl_HP_L_M_DeltoidStart",  
+										"ctrl_HP_L_M_DeltoidEnd",	
+										"ctrl_HP_L_PectoralStart", 
+										"ctrl_HP_L_PectoralEnd",
+										"ctrl_HP_L_TrapeziusStart",
+										"ctrl_HP_L_TrapeziusEnd",
+										"ctrl_HP_R_ClavicleStart",
+										"ctrl_HP_R_ClavicleEnd", 
+										"ctrl_HP_R_M_DeltoidStart",  
+										"ctrl_HP_R_M_DeltoidEnd",	
+										"ctrl_HP_R_PectoralStart", 
+										"ctrl_HP_R_PectoralEnd",
+										"ctrl_HP_R_TrapeziusStart",
+										"ctrl_HP_R_TrapeziusEnd"
+										};
+
+		for ($musclePos in $musclePositioners)
+		{
+			delete -cn $musclePos;
+		}
+		delete MuscleLocating;
+	}
+}

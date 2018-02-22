@@ -1,0 +1,25 @@
+global proc pt_locSEL ()
+{  
+	//create locators on selected objects
+
+	string $selection[] = `ls -sl`;
+	select -cl;
+	for ($sel in $selection)
+		{
+			group -em -name locationFinder;
+			parentConstraint $sel locationFinder;    
+			float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+			float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+
+			string $obj2align = ("loc_" + $sel);
+
+			spaceLocator -n $obj2align ;
+
+			move -rpr $position[0] $position[1] $position[2] $obj2align;
+			rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $obj2align;
+
+			delete locationFinder;
+			select -add $obj2align;
+			print "You got locators";
+		}
+};

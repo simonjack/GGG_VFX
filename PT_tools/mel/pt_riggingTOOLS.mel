@@ -1,0 +1,588 @@
+global proc createCTRL(){
+    string $controlTypes[] = `textScrollList -query -selectItem ctrlScrollList`;
+    string $mOffset = `radioCollection -query -select maintainONorOff`;
+    string $customName = `textField -query -text nameOverride`;
+    string $ctrlName = "default";
+    int $offset;
+	int $ctrlTYPE;
+	string $defaultName = `radioCollection -query -select defaultOrCustomName`;
+    int $pointConst = `checkBox -q -v pointCHECK`;
+    int $orientConst = `checkBox -q -v orientCHECK`;
+    int $parentConst = `checkBox -q -v parentCHECK`;
+    int $xAxis = `checkBox -q -v xCHECK`;
+    int $yAxis = `checkBox -q -v yCHECK`;
+    int $zAxis = `checkBox -q -v zCHECK`;
+
+    if ($mOffset ==  "maintainON")
+    {
+       $offset = 1; 
+    }   else
+    {
+        $offset = 0;
+    }
+    if ($controlTypes[0] == "Arrow")
+    {
+        $ctrlTYPE = 0;
+		$ctrlName = "ARROW";
+    }
+	if ($controlTypes[0] == "Cube")
+    {
+        $ctrlTYPE = 1;
+		$ctrlName = "BOX";
+    }
+    if ($controlTypes[0] == "Circular")
+    {
+        $ctrlTYPE = 2;
+		$ctrlName = "CIRCLE";
+    }
+    if ($controlTypes[0] == "Cross")
+    {
+        $ctrlTYPE = 3;
+		$ctrlName = "CROSS";
+    }
+    if ($controlTypes[0] == "Diamond")
+    {
+        $ctrlTYPE = 4;
+		$ctrlName = "DIAMOND";
+    }
+    if ($controlTypes[0] == "Rotate")
+    {
+        $ctrlTYPE = 5;
+		$ctrlName = "ROTATE";
+    }
+    if ($controlTypes[0] == "Sphere")
+    {
+        $ctrlTYPE = 6;
+		$ctrlName = "SPHERICAL";
+    }
+	string $selection[] = `ls -sl`;
+	if(size($selection)>0)
+	{
+		$ctrlName = $selection[0];
+	}
+	if ($defaultName != "defaultName")
+    {
+        $ctrlName = $customName;
+    } 
+	print ("\n Controller name will be: ctrl_" + $ctrlName +"\n");
+	int $constraintSetup[] = { $ctrlTYPE, $offset, $pointConst, $orientConst, $parentConst, $xAxis, $yAxis, $zAxis};
+    pt_setupCTRL($constraintSetup); 
+}
+
+global proc coloringCtrls ()
+	{
+		string $ctrlSel[] = `ls -sl`;
+		int $Os = `size($ctrlSel)`;
+	for ( $i=0; $i < $Os; $i++ )
+		{
+				setAttr ($ctrlSel[$i] + ".overrideEnabled") 1;
+				int $color = `colorIndexSliderGrp -q -v conColor`;
+				if($color > 0)
+					setAttr ($ctrlSel[$i] + ".overrideColor") ($color - 1); 				
+		}
+	}	
+	
+global proc co()
+	{
+		int $color_slider = `colorIndexSliderGrp -q -v conColor`;
+		$color = $color_slider-1;
+
+		string $list[]=`ls -sl`;
+
+		string $shape[];
+		string $layer[];
+		string $colorNode;
+
+		for ($node in $list)
+			{
+				$shape = `listRelatives -f -s $node`;
+
+				if (size($shape) == 0)
+					{
+						$colorNode = $node;
+					}
+				else
+					{
+						$colorNode = $shape[0];
+					}
+			
+
+			$layer = `listConnections -t displayLayer $colorNode`;
+			if (size($layer) != 0)
+				
+					disconnectAttr ($layer[0] + ".drawInfo") ($colorNode + ".drawOverride");
+					setAttr ($colorNode + ".overrideEnabled") 1;
+					setAttr ($colorNode + ".overrideColor") $color;
+				}
+					print "Color override complete.";
+	}	
+
+global proc updateSlider (int $color)
+	{
+		colorIndexSliderGrp  -e -value $color conColor;
+	}
+	
+global proc boxCTRLsel() 
+	{
+	eval("source \"pt_boxCTRL.mel\"");
+			pt_boxCTRL;	
+	}
+global proc diamondCTRLsel() 
+	{
+	eval("source \"pt_diamondCTRL.mel\"");
+			pt_diamondCTRL;
+	}
+global proc sphericalCTRLsel() 
+	{
+	eval("source \"pt_sphericalCTRL.mel\"");
+			pt_sphericalCTRL;
+	}
+global proc circleCTRLsel() 
+	{
+	eval("source \"pt_circleCTRL.mel\"");
+			pt_circleCTRL;
+	}
+global proc crossCTRLsel() 
+	{
+	eval("source \"pt_crossCTRL.mel\"");
+			pt_crossCTRL;
+	}		
+global proc rotateCTRLsel() 
+	{
+	eval("source \"pt_rotateCTRL.mel\"");
+			pt_rotateCTRL;
+	}		
+global proc arrowCTRLsel() 
+	{
+	eval("source \"pt_arrowCTRL.mel\"");
+			pt_arrowCTRL;
+	}
+global proc createCTRLMenu() 
+	{
+	eval("source \"pt_constraintMENU.mel\"");
+			pt_constraintMENU();
+	}	
+global proc scaleSELECTED()
+	{
+	undoInfo -swf false;
+	string $selection[] = `ls -sl`;
+	float $objNewScale = `floatSliderGrp -q -value "scaleMe"`;
+	for ($sel in $selection)
+		{
+		setAttr ($sel + ".scaleX") $objNewScale;
+		setAttr ($sel + ".scaleY") $objNewScale;
+		setAttr ($sel + ".scaleZ") $objNewScale;
+		}
+	undoInfo -swf true;
+	}
+//FREEZE TRANSFORM PROCS
+global proc transFREEZE()
+	{
+	makeIdentity -apply true -t 1 -r 0 -s 0 -n 0;
+	}	
+global proc rotFREEZE()
+	{
+	makeIdentity -apply true -t 0 -r 1 -s 0 -n 0;
+	}	
+global proc scaleFREEZE()
+	{
+	makeIdentity -apply true -t 0 -r 0 -s 1 -n 0;
+	}	
+//CONSTRAINT PROCS
+global proc  pointCONST () 
+	{
+	doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+	pointConstraint -offset 0 0 0 -weight 1;
+	}
+global proc  pointMoCONST () 
+	{
+	doCreatePointConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+	pointConstraint -mo -weight 1;
+	}
+global proc  orientCONST () 
+	{
+	doCreateOrientConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+	orientConstraint -offset 0 0 0 -weight 1;
+	}
+global proc  orientMoCONST () 
+	{
+	doCreateOrientConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+	orientConstraint -mo -weight 1;
+	}
+global proc  parentCONST () 
+	{
+	doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+	parentConstraint -weight 1;
+	}
+global proc  parentMoCONST () 
+	{
+	doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+	parentConstraint -mo -weight 1;
+	}	
+global proc  scaleCONST () 
+	{
+	doCreateScaleConstraintArgList 1 { "0","1","1","1","0","0","0","1","","1" };
+	scaleConstraint -weight 1;
+	}
+global proc  scaleMoCONST () 
+	{
+	doCreateScaleConstraintArgList 1 { "1","1","1","1","0","0","0","1","","1" };
+	scaleConstraint -mo -weight 1;
+	}
+//MISC PROCS
+global proc alignME()
+	{
+	source pt_align;
+	pt_align;
+	print "Fucking aligned innit?!";
+	}  
+global proc saveSKIN()
+	{
+	source seithWeightTools;
+	seithWeightTools;
+	}  
+global proc copyCRVS()
+	{
+	source pt_copyPasteKeysTools;
+	pt_copyPasteKeysTools;
+	}  	
+global proc locSEL()
+	{
+	source pt_locSEL;
+	pt_locSEL;
+	}  
+global proc jointSEL()
+	{
+	source pt_jointSEL;
+	pt_jointSEL;
+	}
+global proc resetBINDPOSE()
+	{
+	source NT_rebuildDagPose;
+	NT_rebuildDagPose;
+	}
+global proc jointCOUNT()
+	{
+	source countJoints;
+	countJoints;
+	}  
+global proc jointCLEAN()
+	{
+	source pt_jointsCLEAN;
+	pt_jointsCLEAN;
+	}  
+global proc rigBIPED()
+	{
+	source pt_rigBIPED;
+	pt_rigBIPED;
+	}  
+global proc rigQUAD()
+	{
+	source pt_rigQUAD;
+	pt_rigQUAD;
+	}	
+global proc pivotCTRL()
+{
+	source pt_TSMG_pivotCTRL;
+	pt_TSMG_pivotCTRL;
+}
+global proc ikfkSWITCH()
+{
+	source pt_TSMG_FKIKswitch;
+	pt_TSMG_FKIKswitch;
+}
+
+global proc selectAssociatedCTRLS()
+{
+	int $selecta = 1;
+	source pt_curveDetails;
+	pt_curveDetails($selecta);
+}
+global proc curveDetails()
+{
+	int $selecta = 0;
+	source pt_curveDetails;
+	pt_curveDetails($selecta);
+}
+global proc alignPrevKey()
+{
+	string $whichEnd = "Start";
+	source pt_keyValueAlign;
+	pt_keyValueAlign($whichEnd);
+}
+global proc alignFollowKey()
+{
+	string $whichEnd = "End";
+	source pt_keyValueAlign;
+	pt_keyValueAlign($whichEnd);
+} 
+//Shoulder PROCS
+global proc shoulderRigImport()
+	{
+	source pt_ShoulderRig_import;
+	pt_ShoulderRig_import;
+	}	
+global proc shoulderRigAlign()
+	{
+	source pt_ShoulderRig_align;
+	pt_ShoulderRig_align;
+	}
+global proc shoulderRigClean()
+	{
+	source pt_ShoulderRig_clean;
+	pt_ShoulderRig_clean;
+	}
+//Mirror PROCS
+global proc mirrorSPINE()
+	{
+	source pt_TSMG_mirrorSPINE;
+	pt_TSMG_mirrorSPINE;
+	}	
+global proc mirrorARMS()
+	{
+	source pt_TSMG_mirrorARMS;
+	pt_TSMG_mirrorARMS;
+	}
+global proc mirrorLEGS()
+	{
+	source pt_TSMG_mirrorLEGS;
+	pt_TSMG_mirrorLEGS;
+	}
+global proc mirrorANIM()
+	{
+	source pt_mirrorAnimTSMG;
+	pt_mirrorAnimTSMG;
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+global proc pt_riggingTOOLS()
+{
+string $fmWindowName = "fmWindow09";
+
+        // check if the window already exists.
+        // Delete it and remove Preferences if necessary
+  if(`window -ex $fmWindowName`)
+        {
+            deleteUI $fmWindowName;
+        }
+  float $UIwidth = 300;
+  // create a window and store the name   
+  window -title "Pete's Super Duper Rigging Tools" 
+  -w $UIwidth
+  "fmWindow09";
+
+	  columnLayout;
+		frameLayout -collapsable true -label "Controller";
+			textScrollList -numberOfRows 8 -allowMultiSelection false
+				-append "Cube"
+				-append "Sphere"
+				-append "Diamond"
+				-append "Circular"
+				-append "Cross"
+				-append "Rotate"
+				-append "Arrow"
+				-selectItem "Cube"
+				-showIndexedItem 1
+				ctrlScrollList;
+			rowColumnLayout -numberOfColumns 3 ;
+				radioCollection maintainONorOff;		
+								// add some radio buttons to the collection
+								text - label "Maintain Offset";
+								radioButton -label "On" maintainON;
+								radioButton -label "Off" maintainOFF;
+				radioCollection -edit -select maintainOFF maintainONorOff;
+			setParent ..;			
+			
+			rowColumnLayout -numberOfColumns 3;
+				checkBox -label "POINT" pointCHECK;
+				checkBox -label "ORIENT" orientCHECK;
+				checkBox -label "PARENT" parentCHECK;
+				checkBox -label "X" -v 1 xCHECK;
+				checkBox -label "Y" -v 1 yCHECK;
+				checkBox -label "Z" -v 1 zCHECK;
+			setParent ..;  
+				
+			rowColumnLayout -numberOfColumns 3;
+				radioCollection defaultOrCustomName;		
+							// add some radio buttons to the collection
+							text - label "Use Default";
+							radioButton -label "Yes" defaultName;
+							radioButton -label "No" customName;
+    			radioCollection -edit -select defaultName defaultOrCustomName;
+				text -label "Name Override:";
+				textField nameOverride;
+			setParent ..;
+			
+			columnLayout -adj 1;
+				button -label "Create Controller(s)"  -w $UIwidth -bgc .9 .9 .9 - command "createCTRL";
+			setParent ..;
+		setParent ..;
+//////////////////////////////////////////////////////////////////////////////////////////////////////			
+        frameLayout -collapsable true -label "Scale Controllers";
+			columnLayout -adj 1 -cal "left" -w $UIwidth;
+           		floatSliderGrp -minValue -10 -maxValue 10 -value 1 -dragCommand "scaleSELECTED" -field true scaleMe;
+			setParent ..;
+		setParent ..;
+		
+		
+		frameLayout -l " Pick the Color (from www.digitalpimp.com.br)" 
+				-w $UIwidth				
+				-collapsable true fmColor;
+				gridLayout -numberOfRows 4 -numberOfColumns 8 -cellWidthHeight ($UIwidth/8) 20;
+				iconTextButton -bgc .627 .627 .627 -command "updateSlider 0";
+				iconTextButton -bgc .467 .467 .467 -command "updateSlider 1";
+				iconTextButton -bgc .000 .000 .000 -command "updateSlider 2";
+				iconTextButton -bgc .247 .247 .247 -command "updateSlider 3";
+				iconTextButton -bgc .498 .498 .498 -command "updateSlider 4";
+				iconTextButton -bgc 0.608 0 0.157 -command "updateSlider 5";
+				iconTextButton -bgc 0 0.016 0.373 -command "updateSlider 6";
+				iconTextButton -bgc 0 0 1 -command "updateSlider 7";
+				iconTextButton -bgc 0 0.275 0.094 -command "updateSlider 8";
+				iconTextButton -bgc  0.145 0 0.263 -command "updateSlider 9";
+				iconTextButton -bgc 0.78 0 0.78 -command "updateSlider 10";
+				iconTextButton -bgc 0.537 0.278 0.2 -command "updateSlider 11";
+				iconTextButton -bgc 0.243 0.133 0.122 -command "updateSlider 12";
+				iconTextButton -bgc 0.6 0.145 0 -command "updateSlider 13";
+				iconTextButton -bgc 1 0 0 -command "updateSlider 14";
+				iconTextButton -bgc 0 1 0  -command "updateSlider 15";
+				iconTextButton -bgc 0 0.255 0.6 -command "updateSlider 16";
+				iconTextButton -bgc 1 1 1 -command "updateSlider 17";
+				iconTextButton -bgc 1 1 0 -command "updateSlider 18";
+				iconTextButton -bgc 0.388 0.863 1 -command "updateSlider 19";
+				iconTextButton -bgc 0.263 1 0.635 -command "updateSlider 20";
+				iconTextButton -bgc 1 0.686 0.686 -command "updateSlider 21";
+				iconTextButton -bgc 0.89 0.675 0.475 -command "updateSlider 22";
+				iconTextButton -bgc 1 1 0.384 -command "updateSlider 23";
+				iconTextButton -bgc 0 0.6 0.325 -command "updateSlider 24";
+				iconTextButton -bgc 0.627 0.412 0.188 -command "updateSlider 25";
+				iconTextButton -bgc 0.62 0.627 0.188 -command "updateSlider 26";
+				iconTextButton -bgc 0.408 0.627 0.188 -command "updateSlider 27";
+				iconTextButton -bgc 0.188 0.627 0.365 -command "updateSlider 28";
+				iconTextButton -bgc 0.188 0.627 0.627 -command "updateSlider 29";
+				iconTextButton -bgc 0.188 0.404 0.627 -command "updateSlider 30";
+				iconTextButton -bgc 0.435 0.188 0.627 -command "updateSlider 31";
+				setParent..;		
+
+		frameLayout -l " Selected Color (from www.digitalpimp.com.br)" 
+				-w $UIwidth
+				-collapsable false selColor;
+				columnLayout -adj 1;		
+				colorIndexSliderGrp  -min 0 -max 31 -value 0 conColor;
+				button -l "click to change color of selected ctrls" -w 255 -bgc .9 .9 .9 -c coloringCtrls;
+				button -l "'locked or connected and cannot be modified' error" -w 255 -bgc .9 .9 .9 -c co;
+ 			setParent..;
+		setParent ..;
+		setParent ..;
+ 
+		frameLayout -collapsable true -label "Freeze Transforms" 
+				-w $UIwidth;
+             rowColumnLayout -numberOfColumns 3
+					-columnWidth 1 100
+					-columnWidth 2 100
+					-columnWidth 3 100;
+    
+                button -label "Freeze Translations" -command "transFREEZE";
+                button -label "Freeze Rotations" -command "rotFREEZE";
+                button -label "Freeze Scale" -command "scaleFREEZE";
+             setParent ..;
+         setParent ..;
+		 setParent ..;
+
+		frameLayout -collapsable true -label "Constraints" 
+				-w $UIwidth;
+             rowColumnLayout -numberOfColumns 4
+					-columnWidth 1 75
+					-columnWidth 2 75
+					-columnWidth 3 75
+					-columnWidth 4 75;
+                button -label "Point" -command "pointCONST";
+                button -label "Orient" -command "orientCONST";
+                button -label "Parent" -command "parentCONST";
+				button -label "Scale" -command "scaleCONST";
+                button -label "Point MO" -command "pointMoCONST";
+                button -label "Orient MO" -command "orientMoCONST";
+                button -label "Parent MO" -command "parentMoCONST";
+                button -label "Scale MO" -command "scaleMoCONST";
+             setParent ..;
+        setParent ..; 
+		setParent ..;
+	 
+		frameLayout -collapsable true -label "Misc Tools" 
+				-w $UIwidth;
+					 rowColumnLayout -numberOfColumns 4
+					-columnWidth 1 90
+					-columnWidth 2 75
+					-columnWidth 3 75
+					-columnWidth 4 60;
+					button -label "Locator On Sel" -command "locSEL";
+					button -label "Joint On Sel" -command "jointSEL";
+					button -label "Joint Count" -command "jointCOUNT";
+					button -label "Align" -command "alignME";					
+					button -label "Reset bindPose" -command "resetBINDPOSE";
+					button -label "Clean Joints" -command "jointCLEAN";
+					button -label "Save Skin" -command "saveSKIN";					
+					button -label "Copy Curves" -command "copyCRVS";	
+					setParent ..;
+				setParent ..;
+			setParent ..;
+		
+		frameLayout -collapsable true -label "Graph Editor Tools" 
+				-w $UIwidth;
+					 rowColumnLayout -numberOfColumns 4
+					-columnWidth 1 60
+					-columnWidth 2 75
+					-columnWidth 3 75
+					-columnWidth 4 90;			
+					button -label "Curve Info" -command "curveDetails";
+					button -label "Related CTRL" -command "selectAssociatedCTRLS";					
+					button -label "Align Prev KV" -command "alignPrevKey";
+					button -label "Align Next KV" -command "alignFollowKey";
+					setParent ..;
+				setParent ..;
+			setParent ..;
+			
+		frameLayout -collapsable true -label "TSMG Tools" 
+				-w $UIwidth;
+					 rowColumnLayout -numberOfColumns 4
+					-columnWidth 1 60
+					-columnWidth 2 75
+					-columnWidth 3 75
+					-columnWidth 4 90;
+					button -label "Rig Biped" -command "rigBIPED";
+					button -label "Rig Quad" -command "rigQUAD";
+					button -label "Pivot CTRL" -command "pivotCTRL";
+					button -label "ik/fk switch" -command "ikfkSWITCH";	
+					setParent ..;
+		
+		frameLayout -collapsable true -label "Shoulder Rig" 
+				-w $UIwidth;
+					 rowColumnLayout -numberOfColumns 3
+					-columnWidth 1 100
+					-columnWidth 2 100
+					-columnWidth 3 100;
+					button -label "Import" -command "shoulderRigImport";
+					button -label "Align" -command "shoulderRigAlign";
+					button -label "Clean" -command "shoulderRigClean";
+					setParent ..;
+			
+		frameLayout -collapsable true -label "Mirror Tools" 
+				-w $UIwidth;
+					 rowColumnLayout -numberOfColumns 4
+					-columnWidth 1 75
+					-columnWidth 2 75
+					-columnWidth 3 75
+					-columnWidth 4 75;
+			
+					button -label "Spine" -command "mirrorSPINE";
+					button -label "Arms" -command "mirrorARMS";
+					button -label "Legs" -command "mirrorLEGS";
+					button -label "Anim" -command "mirrorANIM";					
+					setParent ..;
+				setParent ..;
+			setParent ..;
+ 
+ 
+// show the window we last created
+showWindow;
+window -e -wh 306 200 $fmWindowName;
+}

@@ -1,0 +1,29 @@
+global proc pt_jointsCLEAN()
+{
+select -hi;
+select `ls -sl -type "joint"`;
+string $selection3[] = `ls -sl`;
+print $selection3[0];
+
+int $maxSelect = size($selection3);
+
+for ($i=0; $i<$maxSelect; ++$i)
+{
+
+setAttr ($selection3[ $i ] + ".jointOrientX") 0;
+setAttr ($selection3[ $i ] + ".jointOrientY") 0;
+setAttr ($selection3[ $i ] + ".jointOrientZ") 0;
+
+float $rotX = `getAttr ($selection3[$i] + ".rotateX")`;
+float $rotY = `getAttr ($selection3[$i] + ".rotateY")`;
+float $rotZ = `getAttr ($selection3[$i] + ".rotateZ")`;
+
+print $rotX;
+print $rotY;
+print $rotZ;
+
+setAttr ($selection3[ $i ] + ".jointOrientX") $rotX;
+setAttr ($selection3[ $i ] + ".jointOrientY") $rotY;
+setAttr ($selection3[ $i ] + ".jointOrientZ") $rotZ;
+}
+}

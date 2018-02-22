@@ -1,0 +1,144 @@
+global proc pt_ShoulderRig_align()
+{
+	string $selection[] = `ls -sl`;
+	int $selectionSize = size($selection);
+	if ($selectionSize<=1)
+	{
+		error "Havent selected arms to align to. Select one left arm joint then one right arm joint and try again.";
+	}
+	else if (!`objExists tmpTSMGNodes`)
+	{
+		error "No tmpTSMGNodes! (Rig is either not imported or has already been aligned)";
+	}else
+	{
+	
+		string $L_Arm_select = $selection[0];
+		string $R_Arm_select = $selection[1];
+		
+		string $L_Arm_parts[] = pt_nameDivide($L_Arm_select,"_");
+		string $R_Arm_parts[] = pt_nameDivide($R_Arm_select,"_");
+		
+		string $LPrefix = $L_Arm_parts[0];
+		string $RPrefix = $R_Arm_parts[0];		
+		
+		//setup variables
+		string $tsmgNeck = "head1_neck";
+		string $tsmgSpine = "spine1_loResSpine3";		
+		
+		string $tsmg_R_Clav = ($RPrefix+"_LoResClavical");
+		string $tsmg_R_UpperArm = ($RPrefix+"_LoResUpperArm");
+		string $tsmg_R_LowerArm = ($RPrefix+"_LoResLowerArm");
+		string $tsmg_L_Clav = ($LPrefix+"_LoResClavical");
+		string $tsmg_L_UpperArm = ($LPrefix+"_LoResUpperArm");
+		string $tsmg_L_LowerArm = ($LPrefix+"_LoResLowerArm");		
+		
+		string $tempNeck = "tmp_head1_neck";
+		string $tempSpine = "tmp_spine1_loResSpine3";
+		string $temp_R_Clav = "tmp_rightArm1_LoResClavical";
+		string $temp_R_UpperArm = "tmp_rightArm1_LoResUpperArm";
+		string $temp_R_LowerArm = "tmp_rightArm1_LoResLowerArm";
+		string $temp_L_Clav = "tmp_leftArm1_LoResClavical";
+		string $temp_L_UpperArm = "tmp_leftArm1_LoResUpperArm";
+		string $temp_L_LowerArm = "tmp_leftArm1_LoResLowerArm";
+		string $tsmgNodeGrp = "tmpTSMGNodes";
+
+		string $jnt_LArmRoll_0 = "SK_L_UpperArmRoll0";
+		string $jnt_LArmRoll_1 = "SK_L_UpperArmRoll1";
+		string $jnt_LArmRoll_2 = "SK_L_UpperArmRoll2";
+		string $jnt_LArmRoll_root = "HP_L_UpperArmRollRoot";
+		string $jnt_RArmRoll_0 = "SK_R_UpperArmRoll0";
+		string $jnt_RArmRoll_1 = "SK_R_UpperArmRoll1";
+		string $jnt_RArmRoll_2 = "SK_R_UpperArmRoll2";
+		string $jnt_RArmRoll_root = "HP_R_UpperArmRollRoot";
+		
+		string $rigNeck = "HP_Neck";
+		string $rigSpine = "BONE_M_Spine3";
+		string $rig_L_Clav = "BONE_L_Shoulder";
+		string $rig_L_UpperArm = "BONE_L_UpperArm";
+
+		string $rig_R_Clav = "BONE_R_Shoulder";
+		string $rig_R_UpperArm = "BONE_R_UpperArm";
+		
+		string $loc_RArmRoll_1 = "loc_R_UpperArmRoll";
+		string $loc_LArmRoll_1 = "loc_L_UpperArmRoll";
+		string $grp_RArmRoll_1 = "grp_R_UpperArmRoll";
+		string $grp_LArmRoll_1 = "grp_L_UpperArmRoll";
+		
+		//setup arrays
+		string $spine_Const[] = `parentConstraint -weight 1 $tsmgSpine $tempSpine`;
+		string $neck_Const[] = `parentConstraint -weight 1 $tsmgNeck $tempNeck`;
+		string $L_Clav_Const[] = `parentConstraint -weight 1 $tsmg_L_Clav $temp_L_Clav`;
+		string $L_UArm_Const[] = `parentConstraint -weight 1 $tsmg_L_UpperArm $temp_L_UpperArm`;
+		string $L_LArm_Const[] = `parentConstraint -weight 1 $tsmg_L_LowerArm $temp_L_LowerArm`;
+		string $R_Clav_Const[] = `parentConstraint -weight 1 $tsmg_R_Clav $temp_R_Clav`;
+		string $R_UArm_Const[] = `parentConstraint -weight 1 $tsmg_R_UpperArm $temp_R_UpperArm`;
+		string $R_LArm_Const[] = `parentConstraint -weight 1 $tsmg_R_LowerArm $temp_R_LowerArm`;
+
+		string $L_rollRoot_const[] = `pointConstraint -offset 0 0 0 -weight 1 $temp_L_UpperArm $jnt_LArmRoll_root`;
+		string $L_roll0_const[] =`pointConstraint -offset 0 0 0 -weight 1 $temp_L_UpperArm $jnt_LArmRoll_0`;
+		string $R_rollRoot_const[] = `pointConstraint -offset 0 0 0 -weight 1 $temp_R_UpperArm $jnt_RArmRoll_root`;
+		string $R_roll0_const[] =`pointConstraint -offset 0 0 0 -weight 1 $temp_R_UpperArm $jnt_RArmRoll_0`;
+
+		//create array of the temp locators
+		string $temp_locs[] = {$tempNeck, $tempSpine, $temp_R_Clav, $temp_R_UpperArm, $temp_R_LowerArm, $temp_L_Clav, $temp_L_UpperArm, $temp_L_LowerArm};
+
+		//delete constraints on locators
+		for ($tempLoc in $temp_locs)
+		{
+			delete -cn $tempLoc;
+		}
+		
+		string $R_armRoll0_rotBuffer[]=`parentConstraint -mo -weight 1 $rig_R_UpperArm $jnt_RArmRoll_0`;
+		string $R_armRollroot_rotBuffer[]=`parentConstraint -mo -weight 1 $rig_R_UpperArm $jnt_RArmRoll_root`;
+		
+		int $xRot_buffer = 90;
+		int $zRot_buffer = 180;
+		if (`gmatch $RPrefix "*right*"` == 1 || `gmatch $RPrefix "*Right*"` == 1)
+		{
+			$xRot_buffer = 0;
+			$zRot_buffer = 0;
+		}
+		
+		string $spine_Const[] = `parentConstraint -weight 1 $tsmgSpine $tempSpine`;
+		string $neck_Const[] = `parentConstraint -weight 1 $tsmgNeck $tempNeck`;
+		string $L_Clav_Const[] = `parentConstraint -weight 1 $tsmg_L_Clav $temp_L_Clav`;
+		string $L_UArm_Const[] = `parentConstraint -weight 1 $tsmg_L_UpperArm $temp_L_UpperArm`;
+		string $L_LArm_Const[] = `parentConstraint -weight 1 $tsmg_L_LowerArm $temp_L_LowerArm`;
+		string $R_Clav_Const[] = `parentConstraint -weight 1 $tsmg_R_Clav $temp_R_Clav`;
+		setAttr ($R_Clav_Const[0]+".target[0].targetOffsetRotateX") $xRot_buffer;
+		setAttr ($R_Clav_Const[0]+".target[0].targetOffsetRotateZ") $zRot_buffer;
+		string $R_UArm_Const[] = `parentConstraint -weight 1 $tsmg_R_UpperArm $temp_R_UpperArm`;
+		string $R_LArm_Const[] = `parentConstraint -weight 1 $tsmg_R_LowerArm $temp_R_LowerArm`;
+		
+		delete $tsmgNodeGrp;	
+		
+		string $grp_L_roll1_const[] = `parentConstraint -weight 1 $tsmg_L_UpperArm $grp_LArmRoll_1`;
+		string $grp_R_roll1_const[] = `parentConstraint -weight 1 $tsmg_R_UpperArm $grp_RArmRoll_1`;	
+		
+		string $loc_L_roll1_const[] =`pointConstraint -offset 0 0 0 -weight 1 $tsmg_L_UpperArm $tsmg_L_LowerArm $loc_LArmRoll_1`;
+		string $loc_R_roll1_const[] =`pointConstraint -offset 0 0 0 -weight 1 $tsmg_R_UpperArm $tsmg_R_LowerArm $loc_RArmRoll_1`;	
+		delete $loc_L_roll1_const[0];
+		delete $loc_R_roll1_const[0];
+		
+		parentConstraint -weight 1 $tsmgNeck $rigNeck;
+		parentConstraint -weight 1 $tsmgSpine $rigSpine;
+		parentConstraint -weight 1 $tsmg_L_Clav $rig_L_Clav;
+		parentConstraint -weight 1 $tsmg_L_UpperArm $rig_L_UpperArm;
+
+		string $R_Clav_tsmgConst[] = `parentConstraint -weight 1 $tsmg_R_Clav $rig_R_Clav`;
+		setAttr ($R_Clav_tsmgConst[0]+".target[0].targetOffsetRotateX") $xRot_buffer;
+		setAttr ($R_Clav_tsmgConst[0]+".target[0].targetOffsetRotateZ") $zRot_buffer;
+		parentConstraint -weight 1 $tsmg_R_UpperArm $rig_R_UpperArm;
+		parentConstraint -weight 1 $tsmg_L_LowerArm $jnt_LArmRoll_2;
+		parentConstraint -weight 1 $tsmg_R_LowerArm $jnt_RArmRoll_2;
+		delete $R_armRoll0_rotBuffer[0];
+		delete $R_armRollroot_rotBuffer[0];
+	
+		
+		aimConstraint -offset 0 0 0 -weight 1 -aimVector 1 0 0 -upVector 0 0 1 -worldUpType "objectrotation" -worldUpVector 0 0 1 -worldUpObject $jnt_LArmRoll_root $tsmg_L_LowerArm $jnt_LArmRoll_0;
+		aimConstraint -offset 0 0 0 -weight 1 -aimVector -1 0 0 -upVector 0 0 1 -worldUpType "objectrotation" -worldUpVector 0 0 1 -worldUpObject $jnt_RArmRoll_root $tsmg_R_LowerArm $jnt_RArmRoll_0;
+		
+		print ("\nShoulder Rig Aligned. \n");
+	
+	}
+}

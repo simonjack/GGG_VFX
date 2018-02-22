@@ -1,0 +1,104 @@
+global proc pt_rigBIPED()
+{
+select -d;
+joint -p 0 0 1 ;
+setAttr "joint1.radius" 2;
+for( $i=1; $i<50; ++$i)
+{
+  select -r joint1 ;
+  duplicate -rr;  
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+rename "joint1" "root";
+rename "joint2" "jnt_hips";
+rename "joint3" "jnt_L_legUpper";
+rename "joint4" "jnt_L_legLower";
+rename "joint5" "jnt_L_foot";
+rename "joint6" "jnt_L_ballFoot";
+rename "joint7" "jnt_R_legUpper";
+rename "joint8" "jnt_R_legLower";
+rename "joint9" "jnt_R_foot";
+rename "joint10" "jnt_R_ballFoot";
+rename "joint11" "jnt_spine01";
+rename "joint12" "jnt_spine02";
+rename "joint13" "jnt_L_clavical";
+rename "joint14" "jnt_L_armUpper";
+rename "joint15" "jnt_L_armLower";
+rename "joint16" "jnt_L_hand";
+rename "joint17" "jnt_R_clavical";
+rename "joint18" "jnt_R_armUpper";
+rename "joint19" "jnt_R_armLower";
+rename "joint20" "jnt_R_hand";
+rename "joint21" "jnt_neck";
+rename "joint22" "jnt_head";
+
+///////////////////////////
+
+setAttr "root.type" 1;
+setAttr "jnt_hips.type" 18;
+setAttr -type "string" jnt_hips.otherType "hips";
+setAttr "jnt_L_legUpper.side" 1;
+setAttr "jnt_L_legUpper.type" 2;
+setAttr "jnt_L_legLower.side" 1;
+setAttr "jnt_L_legLower.type" 3;
+setAttr "jnt_L_foot.side" 1;
+setAttr "jnt_L_foot.type" 4;
+setAttr "jnt_L_ballFoot.side" 1;
+setAttr "jnt_L_ballFoot.type" 5;
+setAttr "jnt_R_ballFoot.side" 2;
+setAttr "jnt_R_ballFoot.type" 5;
+setAttr "jnt_R_foot.side" 2;
+setAttr "jnt_R_foot.type" 4;
+setAttr "jnt_R_legLower.side" 2;
+setAttr "jnt_R_legLower.type" 3;
+setAttr "jnt_R_legUpper.side" 2;
+setAttr "jnt_R_legUpper.type" 2;
+setAttr "jnt_spine01.type" 6;
+setAttr "jnt_spine02.type" 18;
+setAttr -type "string" jnt_spine02.otherType "Chest";
+setAttr "jnt_neck.type" 7;
+setAttr "jnt_head.type" 8;
+setAttr "jnt_L_clavical.side" 1;
+setAttr "jnt_L_clavical.type" 9;
+setAttr "jnt_R_clavical.side" 2;
+setAttr "jnt_R_clavical.type" 9;
+setAttr "jnt_L_armUpper.side" 1;
+setAttr "jnt_L_armUpper.type" 10;
+setAttr "jnt_L_armLower.side" 1;
+setAttr "jnt_L_armLower.type" 11;
+setAttr "jnt_L_hand.side" 1;
+setAttr "jnt_L_hand.type" 12;
+setAttr "jnt_R_armUpper.side" 2;
+setAttr "jnt_R_armUpper.type" 10;
+setAttr "jnt_R_armLower.side" 2;
+setAttr "jnt_R_armLower.type" 11;
+setAttr "jnt_R_hand.side" 2;
+setAttr "jnt_R_hand.type" 12;
+
+///////////////////////////////////////////
+
+parentConstraint leftLeg1_LoResToe jnt_L_ballFoot ;
+parentConstraint leftLeg1_LoResFoot jnt_L_foot ;
+parentConstraint leftLeg1_LoResLowerLeg jnt_L_legLower ;
+parentConstraint rightLeg1_LoResToe jnt_R_ballFoot ;
+parentConstraint rightLeg1_LoResFoot jnt_R_foot ;
+parentConstraint rightLeg1_LoResLowerLeg jnt_R_legLower ;
+parentConstraint rightLeg1_LoResUpperLeg jnt_R_legUpper ;
+parentConstraint leftLeg1_LoResUpperLeg jnt_L_legUpper ;
+parentConstraint spine1_loResPelvis jnt_hips ;
+parentConstraint leftArm1_LoResHand jnt_L_hand ;
+parentConstraint rightArm1_LoResHand  jnt_R_hand ;
+parentConstraint rightArm1_LoResLowerArm jnt_R_armLower ;
+parentConstraint leftArm1_LoResLowerArm jnt_L_armLower ;
+parentConstraint leftArm1_LoResUpperArm jnt_L_armUpper ;
+parentConstraint rightArm1_LoResUpperArm jnt_R_armUpper ;
+parentConstraint rightArm1_LoResClavical jnt_R_clavical ;
+parentConstraint leftArm1_LoResClavical jnt_L_clavical ;
+parentConstraint head1_head jnt_head ;
+parentConstraint head1_neck jnt_neck ;
+parentConstraint spine1_loResSpine3 jnt_spine02 ;
+parentConstraint spine1_loResSpine2 jnt_spine01 ;
+parentConstraint spine1_loResSpine1  root ;
+}

@@ -1,0 +1,115 @@
+/*
+find out selected keys.
+find out which key is the first in selection
+find out which key is the last in selection
+
+get all the keys on the selected curve, store keys in array.
+for each member of the array test if it matches the first key time.
+take the key previous to the one equal in time to the first key
+do the same for last but add one to the index.
+
+find out if there is a key before the first key on the curve
+find out if there is a key after the last key on the curve
+
+*/
+
+global proc float[] pt_selectedKEYS()
+{
+	float $keyTimes[];
+	string $nodes[] = `keyframe -q -name`;
+	for( $node in $nodes ) {
+		$keyTimes = `keyframe -sl -q -tc $node`;
+	}
+	return $keyTimes;
+}
+
+global proc pt_keyValueAlign(string $whichEnd)
+{
+
+	string $selection[] = `ls -sl`;
+	string $animControl;
+	string $animCurveS[] = `keyframe -q -name`;
+	string $animCurve;
+
+	if (size($animCurveS)==1)
+	{
+		$animCurve = $animCurveS[0];
+	}else{
+		error "Please select one curve at a time";
+	}
+	
+	if (size($selection)==1)
+	{
+		$animControl = $selection[0];
+	}else{
+		error "Please select one control at a time";
+	}
+
+	//get selected key's time
+	float $keyTimesSel[] = pt_selectedKEYS();
+	float $firstKey = $keyTimesSel[0];
+	int $lastKeyIndex = size($keyTimesSel) - 1;
+	float $lastKey = $keyTimesSel[$lastKeyIndex];
+	
+	//get value of key and store as variable at times found for 1st and last key in selected keys
+	float $values1st[] = `keyframe -t $firstKey -q -ev`;
+	float $valuesLast[] = `keyframe -t $lastKey -q -ev`;
+	float $firstKeyValue = $values1st[0];
+	float $lastKeyValue = $valuesLast[0];
+	float $previousKey;
+	float $followingKey;
+	
+	//get all keyframes on curve $animCurve
+	float $keyframes[] = `keyframe -q -tc $animCurve`;
+	int $lastKeyframe = size($keyframes)-1;
+
+	if($whichEnd == "Start")
+	{			
+		if($keyframes[0]<$keyTimesSel[0])
+    	{
+    		for ($i=0;$i<size($keyframes);++$i)
+    		{
+    			 if ($keyframes[$i]==$firstKey)
+    			 {
+    				 $previousKey =  $keyframes[$i-1];
+    			 }
+    		}
+    	}else{
+			error "No key before selection";
+		}
+    	
+	}
+
+	if($whichEnd == "End")
+	{	
+		if($keyframes[$lastKeyframe]>$keyTimesSel[$lastKeyIndex])
+		{
+			for ($i=0;$i<size($keyframes);++$i)
+			{
+				 if ($keyframes[$i]==$lastKey)
+				 {
+					 $followingKey = $keyframes[$i+1];
+				 }
+			}
+		}else{
+			error "No key after selection";
+		}
+	}
+	float $valuesPrevious[] = `keyframe -t $previousKey -q -ev`;
+	float $valuesFollowing[] = `keyframe -t $followingKey -q -ev`;
+	float $previousKeyValue = $valuesPrevious[0];
+	float $followingKeyValue = $valuesFollowing[0];
+
+	float $diff1st = $previousKeyValue - $firstKeyValue;
+	float $diffLast = $followingKeyValue - $lastKeyValue;
+    
+	if($whichEnd == "Start")
+	{
+		keyframe -relative -valueChange $diff1st;
+	}else if($whichEnd == "End")
+	{
+		keyframe -relative -valueChange $diffLast;
+	}else{
+		error "something when seriously wrong";
+	}
+}

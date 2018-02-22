@@ -1,0 +1,143 @@
+global proc pt_TSMG_mirrorARMS(){
+
+	string $selection[] = `ls -sl`;
+	int $selSize = size($selection);
+
+	if ($selSize<2)
+	{
+	error "You need to select 2 controllers one on either side";	
+	}
+	
+	string $oneSideController = $selection[0];
+	string $otherSideController = $selection[1];	
+	string $oneSideParts[];
+	string $otherSideParts[];
+	
+	//Break up name into references and controller names, also seperating by _ to find out the first token which tells us the prefix used for each side
+	
+	select -r $selection[0];
+	string $nameSegments[];
+	$nameSegments = pt_nameSpace_Controller();
+	string $references = $nameSegments[0];
+	string $oneSidecontrollerName = $nameSegments[1];
+	int $oneNumTokens = `tokenize $oneSidecontrollerName "_" $oneSideParts`;
+
+	if( $oneNumTokens == 0 )
+	{
+		   print( "The object selected is not compatible, with this script" );
+	}
+	
+	select -r $selection[1];
+	string $nameSegments[];
+	$nameSegments = pt_nameSpace_Controller();
+	string $references = $nameSegments[0];
+	string $otherSidecontrollerName = $nameSegments[1];
+	int $othernumTokens = `tokenize $otherSidecontrollerName "_" $otherSideParts`;
+
+	if( $othernumTokens == 0 )
+	{
+		   print( "The object selected is not compatible, with this script" );
+	}
+	
+	$oneSide = $oneSideParts[0];
+	$otherSide = $otherSideParts[0];
+	
+	
+	//set up arrays and variables for tsmg controllers names
+	
+	string $fkCTRLSoneSide[];
+	$fkCTRLSoneSide[0] = ($references +$oneSide + "_HandControl");
+	$fkCTRLSoneSide[1] = ($references +$oneSide + "_LowerArmControl");
+	$fkCTRLSoneSide[2] = ($references +$oneSide + "_UpperArmControl");
+	
+	string $fkCTRLSotherSide[];
+	$fkCTRLSotherSide[0] = ($references +$otherSide + "_HandControl");
+	$fkCTRLSotherSide[1] = ($references +$otherSide + "_LowerArmControl");
+	$fkCTRLSotherSide[2] = ($references +$otherSide + "_UpperArmControl");
+	
+	string $ikCTRLSoneSide[];
+	$ikCTRLSoneSide[0] = ($references +$oneSide + "_ArmIKControl");
+	$ikCTRLSoneSide[1] = ($references +$oneSide + "_ArmIKElbowControl");
+	
+	string $ikCTRLSotherSide[];
+	$ikCTRLSotherSide[0] = ($references +$otherSide + "_ArmIKControl");
+	$ikCTRLSotherSide[1] = ($references +$otherSide + "_ArmIKElbowControl");
+
+	string $calvicalOneSide = ($references +$oneSide + "_ClavicalControl");
+	string $calvicalOtherSide = ($references +$otherSide + "_ClavicalControl");
+		
+	//fk mirror
+	$numberOfCTRLS = size($fkCTRLSoneSide);
+	for ($i=0;$i<$numberOfCTRLS;$i++)
+		{
+			select -r $fkCTRLSoneSide[$i];
+			//print ("///// " + $fkCTRLSoneSide[$i]);
+			string $attributeList[] = `listAttr -k -v -r -s`;
+			for ($attr in $attributeList)
+				{
+					//print (" " + $attr);				
+					float $oldValueONE = `getAttr ($fkCTRLSoneSide[$i] + "." + $attr)`;
+					float $oldValueOTHER = `getAttr ($fkCTRLSotherSide[$i] + "." + $attr)`;
+					float $newValueONE = $oldValueOTHER;
+					float $newValueOTHER = $oldValueONE;
+					setAttr ($fkCTRLSoneSide[$i] + "." + $attr) $newValueONE;
+					setAttr ($fkCTRLSotherSide[$i] + "." + $attr) $newValueOTHER;
+				
+				}
+		}
+	select -r $calvicalOneSide;
+	string $attributeList[] = `listAttr -k -v -r -s`;
+	for ($attr in $attributeList)
+		{
+			float $oldValueONE = `getAttr ($calvicalOneSide + "." + $attr)`;
+			float $oldValueOTHER = `getAttr ($calvicalOtherSide + "." + $attr)`;
+			float $newValueONE = $oldValueOTHER;
+			float $newValueOTHER = $oldValueONE;
+			setAttr ($calvicalOneSide + "." + $attr) $newValueONE;
+			setAttr ($calvicalOtherSide + "." + $attr) $newValueOTHER;
+		}
+			
+	//ik mirror
+	select -r $ikCTRLSoneSide[0] $ikCTRLSotherSide[0];
+
+	string $locSelection[] = `ls -sl`;
+	select -cl;
+	group -em -n mirrorGROUP;
+
+	for ($locSel in $locSelection)
+		{
+			group -em -name locationFinder;
+			parentConstraint $locSel locationFinder;    
+			float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+			float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+
+			string $obj2align = ("locMirror_" + $locSel);
+
+			spaceLocator -n $obj2align ;
+
+			move -rpr $position[0] $position[1] $position[2] $obj2align;
+			rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $obj2align;
+
+			delete locationFinder;
+			parent $obj2align mirrorGROUP;
+		}
+	setAttr mirrorGROUP.scaleX -1;
+	select -r ("locMirror_" + $ikCTRLSoneSide[0]) $ikCTRLSotherSide[0];
+	pt_align();
+	select -r ("locMirror_" + $ikCTRLSotherSide[0]) $ikCTRLSoneSide[0];
+	pt_align();	
+	delete mirrorGROUP;
+	
+	select -r $ikCTRLSotherSide[1];
+	string $attributeList[] = `listAttr -k -v -r -s`;
+	for ($attr in $attributeList)
+		{
+			float $oldValueONE = `getAttr ($ikCTRLSoneSide[1] + "." + $attr)`;
+			float $oldValueOTHER = `getAttr ($ikCTRLSotherSide[1] + "." + $attr)`;
+			float $newValueONE = $oldValueOTHER;
+			float $newValueOTHER = $oldValueONE;
+			setAttr ($ikCTRLSoneSide[1] + "." + $attr) $newValueONE;
+			setAttr ($ikCTRLSotherSide[1] + "." + $attr) $newValueOTHER;
+		}
+	select -r $selection;
+}

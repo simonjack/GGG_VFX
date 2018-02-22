@@ -1,0 +1,177 @@
+global proc pt_mirrorAnimTSMG()
+{
+	string $selection[] = `ls - sl`;
+	float $currentTime = `currentTime -query`;
+	
+	if (size($selection)==0)
+	{
+		error "Nothing Selected. Please select a TSMG controller of the character you want to mirror";
+	}
+	string $nameSegs[] = pt_nameSpace_Controller();
+	string $nameSpace = $nameSegs[0];
+	string $pt_left = "left";
+	string $pt_right = "right";
+
+	string $CTRLS_spineIK[];
+	string $CTRLS_headCTRLS[];
+	string $CTRL_legFK[];
+	string $CTRL_legIK[];
+	string $CTRL_armFK[];
+	string $CTRL_armIK[];
+
+	string $CTRL_limbs[];
+	string $CTRLS_spine[];
+	string $CTRLS_head[];
+	string $CTRLS_L_legFK[];
+	string $CTRLS_R_legFK[];
+	string $CTRLS_L_legIK[];
+	string $CTRLS_R_legIK[];
+	string $CTRLS_L_armFK[];
+	string $CTRLS_R_armFK[];
+	string $CTRLS_L_armIK[];
+	string $CTRLS_R_armIK[];
+
+	string $CTRLS_leftSide[];
+	string $CTRLS_rightSide[];
+
+	$CTRLS_spineIK = {"spine1_torsoIKControl", "spine1_middleSpineIKControl", "spine1_hipsIKControl" , "TSMG_upper_body"};
+	$CTRLS_headCTRLS = {"head1_Control", "head1_neckControl"};
+	$CTRL_legFK = {"Leg1_UpperLegControl", "Leg1_LowerLegControl", "Leg1_FootControl", "Leg1_ToeControl"};
+	$CTRL_legIK = {"Leg1_LegIKControl", "Leg1_IKHeelControl", "Leg1_LegIKKneeControl"};
+	$CTRL_armFK = {"Arm1_ClavicalControl", "Arm1_UpperArmControl", "Arm1_LowerArmControl", "Arm1_HandControl", "Finger1_Control", "Thumb1_Control"};
+	$CTRL_armIK = {"Arm1_ArmIKControl", "Arm1_ArmIKElbowControl"};
+
+	//add namespace prefix and lef or right and store as left control and right control arrays
+	for ($LorRctrls in $CTRL_legFK)
+	{
+		string $ctrl_ONleftSide = ($nameSpace + $pt_left + $LorRctrls);
+		string $ctrl_ONrightSide = ($nameSpace + $pt_right + $LorRctrls); 
+	   
+		stringArrayInsertAtIndex(size($CTRLS_L_legFK), $CTRLS_L_legFK, $ctrl_ONleftSide); 
+		stringArrayInsertAtIndex(size($CTRLS_R_legFK), $CTRLS_R_legFK, $ctrl_ONrightSide);    
+	}
+	for ($LorRctrls in $CTRL_legIK)
+	{
+		string $ctrl_ONleftSide = ($nameSpace + $pt_left + $LorRctrls);
+		string $ctrl_ONrightSide = ($nameSpace + $pt_right + $LorRctrls); 
+	   
+		stringArrayInsertAtIndex(size($CTRLS_L_legIK), $CTRLS_L_legIK, $ctrl_ONleftSide); 
+		stringArrayInsertAtIndex(size($CTRLS_R_legIK), $CTRLS_R_legIK, $ctrl_ONrightSide);    
+	}
+	for ($LorRctrls in $CTRL_armFK)
+	{
+		string $ctrl_ONleftSide = ($nameSpace + $pt_left + $LorRctrls);
+		string $ctrl_ONrightSide = ($nameSpace + $pt_right + $LorRctrls); 
+	   
+		stringArrayInsertAtIndex(size($CTRLS_L_armFK), $CTRLS_L_armFK, $ctrl_ONleftSide); 
+		stringArrayInsertAtIndex(size($CTRLS_R_armFK), $CTRLS_R_armFK, $ctrl_ONrightSide);    
+	}
+	for ($LorRctrls in $CTRL_armIK)
+	{
+		string $ctrl_ONleftSide = ($nameSpace + $pt_left + $LorRctrls);
+		string $ctrl_ONrightSide = ($nameSpace + $pt_right + $LorRctrls); 
+	   
+		stringArrayInsertAtIndex(size($CTRLS_L_armIK), $CTRLS_L_armIK, $ctrl_ONleftSide); 
+		stringArrayInsertAtIndex(size($CTRLS_R_armIK), $CTRLS_R_armIK, $ctrl_ONrightSide);    
+	}
+	for ($ctrls in $CTRLS_spineIK)
+	{
+		string $ctrl_spine = ($nameSpace + $ctrls); 
+		stringArrayInsertAtIndex(size($CTRLS_spine), $CTRLS_spine, $ctrl_spine); 
+	}
+	for ($ctrls in $CTRLS_headCTRLS)
+	{
+		string $ctrl_head = ($nameSpace + $ctrls);   
+		stringArrayInsertAtIndex(size($CTRLS_head), $CTRLS_head, $ctrl_head);    
+	}
+
+		
+	//mirror anim curves for IK limb ctrls
+	for ($ctrlTmp in $CTRLS_L_legIK)
+	{
+		int $invertNO = 1;
+		int $invertYES = -1;
+		scaleKey -iub false -ts 1 -vs $invertNO -attribute rx $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute ry $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute rz $ctrlTmp;    
+	}
+	for ($ctrlTmp in $CTRLS_R_legIK)
+	{
+		int $invertNO = 1;
+		int $invertYES = -1;
+		scaleKey -iub false -ts 1 -vs $invertNO -attribute rx $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute ry $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute rz $ctrlTmp;    
+	}
+
+	//mirror anim curves for IK translates 
+	scaleKey -iub false -ts 1 -vs -1 -attribute tx ($nameSpace+"leftArm1_ArmIKControl");    
+	scaleKey -iub false -ts 1 -vs -1 -attribute tx ($nameSpace+"rightArm1_ArmIKControl");
+	scaleKey -iub false -ts 1 -vs -1 -attribute tx ($nameSpace+"leftLeg1_LegIKControl");    
+	scaleKey -iub false -ts 1 -vs -1 -attribute tx ($nameSpace+"rightLeg1_LegIKControl");
+	//final mirror for ik pole vector knees
+	scaleKey -iub false -ts 1 -vs -1 -attribute rx ($nameSpace+"leftLeg1_LegIKKneeControl");    
+	scaleKey -iub false -ts 1 -vs -1 -attribute rx ($nameSpace+"rightLeg1_LegIKKneeControl");
+	//final mirror for fk upperleg
+	scaleKey -iub false -ts 1 -vs -1 -attribute rz ($nameSpace+"leftLeg1_UpperLegControl");    
+	scaleKey -iub false -ts 1 -vs -1 -attribute rz ($nameSpace+"rightLeg1_UpperLegControl");	
+
+	//mirror anim curves for center ctrls
+	for ($ctrlTmp in $CTRLS_spine)
+	{
+		int $invertNO = 1;
+		int $invertYES = -1;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute tx $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertNO -attribute ty $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertNO -attribute tz $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertNO -attribute rx $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute ry $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute rz $ctrlTmp;    
+	}
+	for ($ctrlTmp in $CTRLS_head)
+	{
+		int $invertNO = 1;
+		int $invertYES = -1;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute rx $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertNO -attribute ry $ctrlTmp;
+		scaleKey -iub false -ts 1 -vs $invertYES -attribute rz $ctrlTmp;    
+	}
+
+	//append arrays to master side arrays
+
+	appendStringArray($CTRLS_leftSide, $CTRLS_L_legFK, size($CTRLS_L_legFK));
+	appendStringArray($CTRLS_leftSide, $CTRLS_L_legIK, size($CTRLS_L_legIK));
+	appendStringArray($CTRLS_leftSide, $CTRLS_L_armFK, size($CTRLS_L_armFK));
+	appendStringArray($CTRLS_leftSide, $CTRLS_L_armIK, size($CTRLS_L_armIK));
+
+	appendStringArray($CTRLS_rightSide, $CTRLS_R_legFK, size($CTRLS_R_legFK));
+	appendStringArray($CTRLS_rightSide, $CTRLS_R_legIK, size($CTRLS_R_legIK));
+	appendStringArray($CTRLS_rightSide, $CTRLS_R_armFK, size($CTRLS_R_armFK));
+	appendStringArray($CTRLS_rightSide, $CTRLS_R_armIK, size($CTRLS_R_armIK));
+
+	for( $i=0; $i<size($CTRLS_leftSide); ++$i )
+	{
+		currentTime 0 ;
+		setKeyframe($CTRLS_rightSide[$i]);
+		setKeyframe($CTRLS_leftSide[$i]);
+		//print ($CTRLS_leftSide[$i] +"\n");
+		//print ($CTRLS_rightSide[$i] +"\n");
+		pt_copyLnRAnims($CTRLS_rightSide[$i], $CTRLS_leftSide[$i]);
+	}
+	pt_mirrorUpperBodyTSMGattr($nameSpace);
+	//clean up
+	if (`objExists null_pt_Upper`)
+	{
+		delete null_pt_Upper;
+	}
+		if (`objExists null_pt_Right`)
+	{
+		delete null_pt_Right;
+	}
+		if (`objExists null_pt_Left`)
+	{
+		delete null_pt_Left;
+	}
+	select -r $selection;
+	currentTime $currentTime;
+}

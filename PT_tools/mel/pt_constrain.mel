@@ -1,0 +1,37 @@
+global proc pt_constrain(string $parent, string $child, int $constraintSetup[])
+{
+	string $moVar = $constraintSetup[1];
+	string $pointConst = $constraintSetup[2];
+	string $orientConst = $constraintSetup[3];
+	string $parentConst = $constraintSetup[4];
+	string $xAxis = 1 - $constraintSetup[5];
+	string $yAxis = 1 - $constraintSetup[6];
+	string $zAxis = 1 - $constraintSetup[7];
+	string $xOffset = "0";
+	string $yOffset = "0";
+	string $zOffset = "0";
+	string $AnimationLayer = "";
+	string $layerOverRide = "1";
+	
+	//doCreateParentConstraintArgList 1 { maintain offset,translate X,translate Y,translate Z,rotate X,rotate Y,rotate Z,Weight,Animation Layer,Layer Override };
+	if ($parentConst=="1")
+	{
+		select -r $parent $child;
+		doCreateParentConstraintArgList 1 { $moVar,$xAxis,$yAxis,$zAxis,$xAxis,$yAxis,$zAxis,"1",$AnimationLayer,$layerOverRide };				
+	}
+	else
+	{
+		if ($pointConst=="1")
+		{
+		select -r $parent $child;
+		doCreatePointConstraintArgList 1 { $moVar,$xOffset,$yOffset,$zOffset,$xAxis,$yAxis,$zAxis,"1",$AnimationLayer,$layerOverRide };
+		}
+		if ($orientConst=="1")
+		{
+		select -r $parent $child;
+		doCreateOrientConstraintArgList 1 { $moVar,$xOffset,$yOffset,$zOffset,$xAxis,$yAxis,$zAxis,"1",$AnimationLayer,$layerOverRide };
+		}
+	}
+	
+	//doCreateScaleConstraintArgList 1 { $moVar,$xOffset,$yOffset,$zOffset,$xAxis,$yAxis,$zAxis,"1",$AnimationLayer,$layerOverRide };		
+}			

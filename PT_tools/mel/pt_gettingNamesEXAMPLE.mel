@@ -1,0 +1,11 @@
+global proc pt_gettingNamesEXAMPLE(){
+string $nameSegments[];
+$nameSegments = pt_nameSpace_Controller();
+string $references = $nameSegments[0];
+string $controllerName = $nameSegments[1];
+print " ref = ";
+print $references;
+print " controller = ";
+print $controllerName;
+}
+pt_gettingNamesEXAMPLE;

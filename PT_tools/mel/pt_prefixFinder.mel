@@ -1,0 +1,30 @@
+global proc string[] pt_prefixFinder(string $nameDismantle, string $seperator){
+	string $beforeSeperator;
+	string $afterSeperator;
+
+	string $firstParts[];
+
+	//counts number of parts in name using the seperator
+	int $numTokens = `tokenize $nameDismantle $seperator $firstParts`;
+
+	if( $numTokens == 0 )
+	{
+		print( "To err is human.  In other words it's your fault." );  
+	}
+	if( $numTokens == 1 )
+	{
+		$afterSeperator = $nameDismantle;
+	}
+	//if it is made up of more than one part destruct the name giving $beforeSeperator as the namespaces before controller name and $afterSeperator as the constrollers name
+	if ($numTokens > 1)
+	{
+		$beforeSeperator = $firstParts[0];
+		int $stringSize = size($beforeSeperator);
+		$afterSeperator = `substring $nameDismantle ($stringSize+2) (size($nameDismantle))`;
+	}	
+	//print ("Name Spaces = " + $beforeSeperator + " Controller Name = " +  $afterSeperator);
+	string $nameSegs[];
+	$nameSegs = {$beforeSeperator, $afterSeperator};
+	//print ("Name Spaces = " + $nameSegs[0] + " Controller Name = " +  $nameSegs[1]);
+	return $nameSegs;
+}

@@ -1,0 +1,12 @@
+global proc pt_locCentre (){
+SelectEdgeLoop;
+ConvertSelectionToVertices;hilite;	
+selectType -ocm -alc false;selectType -ocm -polymeshVertex true;
+newCluster " -envelope 1";
+string $selection[]= `ls -sl`;
+string $newLocator = pt_locSEL();
+setAttr ($newLocator+".localScaleZ") 15;
+setAttr ($newLocator+".localScaleX") 15;
+setAttr ($newLocator+".localScaleY") 15;
+delete $selection;
+}

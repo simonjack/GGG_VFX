@@ -1,0 +1,201 @@
+global proc pt_TSMG_mirrorLEGS(){
+
+	string $selection[] = `ls -sl`;
+	int $selSize = size($selection);
+
+	if ($selSize<2)
+	{
+	error "You need to select 2 controllers one on either side";	
+	}
+	
+	string $oneSideController = $selection[0];
+	string $otherSideController = $selection[1];	
+	string $oneSideParts[];
+	string $otherSideParts[];
+	
+	//Break up name into references and controller names, also seperating by _ to find out the first token which tells us the prefix used for each side
+	
+	select -r $oneSideController;
+	string $oneNameSegments[];
+	$oneNameSegments = pt_nameSpace_Controller();
+	string $references = $oneNameSegments[0];
+	string $oneSidecontrollerName = $oneNameSegments[1];
+	int $oneNumTokens = `tokenize $oneSidecontrollerName "_" $oneSideParts`;
+
+	if( $oneNumTokens == 0 )
+	{
+		   print( "The object selected is not compatible, with this script" );
+	}
+	
+	select -r $otherSideController;
+	string $otherNameSegments[];
+	$otherNameSegments = pt_nameSpace_Controller();
+	//string $references = $otherNameSegments[0];
+	string $otherSidecontrollerName = $otherNameSegments[1];
+	int $othernumTokens = `tokenize $otherSidecontrollerName "_" $otherSideParts`;
+
+	if( $othernumTokens == 0 )
+	{
+		   print( "The object selected is not compatible, with this script" );
+	}
+	
+	$oneSide = ($oneSideParts[0] + "_");
+	$otherSide = ($otherSideParts[0] + "_");
+	
+	
+	//set up arrays and variables for tsmg controllers names
+	
+	string $fkCTRLSoneSide[];
+	$fkCTRLSoneSide[0] = ($references +$oneSide + "FootControl");
+	$fkCTRLSoneSide[1] = ($references +$oneSide + "LowerLegControl");
+	$fkCTRLSoneSide[2] = ($references +$oneSide + "UpperLegControl");
+	$fkCTRLSoneSide[3] = ($references +$oneSide + "ToeControl");
+	
+	string $fkCTRLSotherSide[];
+	$fkCTRLSotherSide[0] = ($references +$otherSide + "FootControl");
+	$fkCTRLSotherSide[1] = ($references +$otherSide + "LowerLegControl");
+	$fkCTRLSotherSide[2] = ($references +$otherSide + "UpperLegControl");
+	$fkCTRLSotherSide[3] = ($references +$otherSide + "ToeControl");
+
+	
+	string $ikCTRLSoneSide[];
+	$ikCTRLSoneSide[0] = ($references +$oneSide + "LegIKControl");
+	$ikCTRLSoneSide[1] = ($references +$oneSide + "LegIKKneeControl");
+	
+	string $ikCTRLSotherSide[];
+	$ikCTRLSotherSide[0] = ($references +$otherSide + "LegIKControl");
+	$ikCTRLSotherSide[1] = ($references +$otherSide + "LegIKKneeControl");
+
+	string $toesIKOneSide = ($references +$oneSide + "IKHeelControl");
+	string $toesIKOtherSide = ($references +$otherSide + "IKHeelControl");
+		
+	//fk mirror
+	$numberOfCTRLS = size($fkCTRLSoneSide);
+	for ($i=0;$i<$numberOfCTRLS;$i++)
+		{
+			select -r $fkCTRLSoneSide[$i];
+			//print ("///// " + $fkCTRLSoneSide[$i]);
+			string $attributeList[] = `listAttr -k -v -r -s`;
+			for ($attr in $attributeList)
+				{
+					//print (" " + $attr);				
+					float $oldValueONE = `getAttr ($fkCTRLSoneSide[$i] + "." + $attr)`;
+					float $oldValueOTHER = `getAttr ($fkCTRLSotherSide[$i] + "." + $attr)`;
+					float $newValueONE = $oldValueOTHER;
+					float $newValueOTHER = $oldValueONE;
+					setAttr ($fkCTRLSoneSide[$i] + "." + $attr) $newValueONE;
+					setAttr ($fkCTRLSotherSide[$i] + "." + $attr) $newValueOTHER;
+				
+				}
+		}
+	select -r $toesIKOneSide;
+	string $attributeList[] = `listAttr -k -v -r -s`;
+	for ($attr in $attributeList)
+		{
+			float $oldValueONE = `getAttr ($toesIKOneSide + "." + $attr)`;
+			float $oldValueOTHER = `getAttr ($toesIKOtherSide + "." + $attr)`;
+			float $newValueONE = $oldValueOTHER;
+			float $newValueOTHER = $oldValueONE;
+			setAttr ($toesIKOneSide + "." + $attr) $newValueONE;
+			setAttr ($toesIKOtherSide + "." + $attr) $newValueOTHER;
+		}
+	
+	//correcting rotations
+	$newOneRotX = -(`getAttr ($fkCTRLSoneSide[2] + ".rotateX")`);
+	$newOneRotZ = -(`getAttr ($fkCTRLSoneSide[2] + ".rotateZ")`);
+	$newOtherRotX = -(`getAttr ($fkCTRLSotherSide[2] + ".rotateX")`);
+	$newOtherRotZ = -(`getAttr ($fkCTRLSotherSide[2] + ".rotateZ")`);
+	setAttr ($fkCTRLSoneSide[2] + ".rotateX") $newOneRotX;
+	setAttr ($fkCTRLSoneSide[2] + ".rotateZ") $newOneRotZ;
+	setAttr ($fkCTRLSotherSide[2] + ".rotateX") $newOtherRotX;
+	setAttr ($fkCTRLSotherSide[2] + ".rotateZ") $newOtherRotZ; 
+
+	$newOneRotX = -(`getAttr ($fkCTRLSoneSide[0] + ".rotateX")`);
+	$newOneRotZ = -(`getAttr ($fkCTRLSoneSide[0] + ".rotateZ")`);
+	$newOtherRotX = -(`getAttr ($fkCTRLSotherSide[0] + ".rotateX")`);
+	$newOtherRotZ = -(`getAttr ($fkCTRLSotherSide[0] + ".rotateZ")`);
+	setAttr ($fkCTRLSoneSide[0] + ".rotateX") $newOneRotX;
+	setAttr ($fkCTRLSoneSide[0] + ".rotateZ") $newOneRotZ;
+	setAttr ($fkCTRLSotherSide[0] + ".rotateX") $newOtherRotX;
+	setAttr ($fkCTRLSotherSide[0] + ".rotateZ") $newOtherRotZ; 	
+
+	
+	//ik mirror
+	
+	$numberOfCTRLS = size($ikCTRLSoneSide);
+	for ($i=1;$i<$numberOfCTRLS;$i++)
+		{
+			select -r $ikCTRLSoneSide[$i];
+			string $attributeList[] = `listAttr -k -v -r -s`;
+			for ($attr in $attributeList)
+				{
+					//print (" " + $attr);				
+					float $oldValueONE = `getAttr ($ikCTRLSoneSide[$i] + "." + $attr)`;
+					float $oldValueOTHER = `getAttr ($ikCTRLSotherSide[$i] + "." + $attr)`;
+					float $newValueONE = $oldValueOTHER;
+					float $newValueOTHER = $oldValueONE;
+					setAttr ($ikCTRLSoneSide[$i] + "." + $attr) $newValueONE;
+					setAttr ($ikCTRLSotherSide[$i] + "." + $attr) $newValueOTHER;
+				
+				}
+		}
+		
+			
+	group -em -name oneFootFinder;
+	group -em -name otherFootFinder;
+	
+	select -r $ikCTRLSoneSide[0] oneFootFinder;
+	pt_align();
+	select -r $ikCTRLSotherSide[0] otherFootFinder;
+	pt_align();	
+	
+	
+	float $oneRotX = `getAttr oneFootFinder.rotateX`;
+	float $oneRotY = -(`getAttr oneFootFinder.rotateY`);
+	float $oneRotZ = `getAttr oneFootFinder.rotateZ`;
+	float $oneTransX = -(`getAttr oneFootFinder.translateX`);
+	float $oneTransY = `getAttr oneFootFinder.translateY`;
+	float $oneTransZ = `getAttr oneFootFinder.translateZ`;
+
+	float $otherRotX = `getAttr otherFootFinder.rotateX`;
+	float $otherRotY = -(`getAttr otherFootFinder.rotateY`);
+	float $otherRotZ = `getAttr otherFootFinder.rotateZ`;
+	float $otherTransX = -(`getAttr otherFootFinder.translateX`);
+	float $otherTransY = `getAttr otherFootFinder.translateY`;
+	float $otherTransZ = `getAttr otherFootFinder.translateZ`;
+
+	setAttr oneFootFinder.rotateX $otherRotX;
+	setAttr oneFootFinder.rotateY $otherRotY;
+	setAttr oneFootFinder.rotateZ $otherRotZ;
+	setAttr oneFootFinder.translateX $otherTransX;
+	setAttr oneFootFinder.translateY $otherTransY;
+	setAttr oneFootFinder.translateZ $otherTransZ;
+	
+	setAttr otherFootFinder.rotateX $oneRotX;
+	setAttr otherFootFinder.rotateY $oneRotY;
+	setAttr otherFootFinder.rotateZ $oneRotZ;
+	setAttr otherFootFinder.translateX $oneTransX;
+	setAttr otherFootFinder.translateY $oneTransY;
+	setAttr otherFootFinder.translateZ $oneTransZ;	
+		
+	select -r oneFootFinder $ikCTRLSoneSide[0];
+	pt_align();
+	select -r otherFootFinder $ikCTRLSotherSide[0];
+	pt_align();	
+	delete oneFootFinder otherFootFinder;
+	select -r  $selection;
+	/*
+	select -r $ikCTRLSoneSide[1];
+	string $attributeList[] = `listAttr -k -v -r -s`;
+	for ($attr in $attributeList)
+		{
+			float $oldValueONE = `getAttr ($ikCTRLSoneSide[1] + "." + $attr)`;
+			float $oldValueOTHER = `getAttr ($ikCTRLSotherSide[1] + "." + $attr)`;
+			float $newValueONE = $oldValueOTHER;
+			float $newValueOTHER = $oldValueONE;
+			setAttr ($ikCTRLSoneSide[1] + "." + $attr) $newValueONE;
+			setAttr ($ikCTRLSotherSide[1] + "." + $attr) $newValueOTHER;
+		}
+	*/
+	select -r $selection;
+}

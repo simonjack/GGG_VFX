@@ -1,0 +1,246 @@
+global proc pt_optomizeSceneAnimCurves()
+{
+	string $animCurves[]= `ls -typ "animCurveTL" -typ "animCurveTU" -typ "animCurveTA" -typ "animCurveTT"`;
+	for ($crv in $animCurves)
+	{
+		string $allConnections[] = `listConnections -s false -d true -c true -sh true $crv`;
+		if (size($allConnections)==0)
+			{
+				delete $crv;
+			}
+	}
+}
+global proc string pt_nameSpaceRemove(string $curve, string $nameSapce)
+{
+	//print ("Before = " + $curve + " Namespace = " + $nameSapce + "\n");
+	string $removeTEXT = $nameSapce;
+	string $nameNoNameSpace = `substitute $removeTEXT $curve  ""`;
+	//print ("After = " + $nameNoNameSpace + "\n");
+	return $nameNoNameSpace;
+}
+
+global proc pt_copyCurves()
+{
+	//declare variables
+	global string $pt_global_selection[];
+	global string $pt_global_attribute[];
+	clear($pt_global_selection);
+	clear($pt_global_attribute);
+	int $increment = 0;
+	string $nameSpace;
+	string $tmpAttrPath;
+	
+	//delete unused curves
+	pt_optomizeSceneAnimCurves();
+	
+	//get all animated curve names in scene
+	string $animCurves[]= `ls -typ "animCurveTL" -typ "animCurveTU" -typ "animCurveTA" -typ "animCurveTT"`;
+	
+	//get namespace
+	for ($crv in $animCurves)
+	{
+		string $nameSegs[] = pt_nameSpaceFinder($crv);
+		$tmp_nameSpace = $nameSegs[0];
+		//this just gets the last nameSpace that isnt blank
+		if ($tmp_nameSpace != "")
+		{
+			$nameSpace = $tmp_nameSpace;
+		}
+	}
+	print ("Namespace = " + $nameSpace + "\n");
+	
+	//Get names of attributes and controller
+	for ($crv in $animCurves)
+	{
+		string $pt_controller;
+		string $pt_attribute;
+		
+		//Find out the connections
+		string $allConnections[] = `listConnections -s false -d true -c true -sh true -p true $crv`;
+		
+		//if allConnections == 0 then they are of no use to use, they are referenced in curves
+		if (size($allConnections)>0)
+		{
+			string $outputConnection = $allConnections[0];
+			string $attributeConnection =  $allConnections[1];
+			string $connectionNodeType = `nodeType $attributeConnection`;
+			
+			if ($connectionNodeType == "joint")
+			{
+				string $controlPeriodAttribute[] = pt_nameDivide($attributeConnection, ".");
+				$pt_controller = $controlPeriodAttribute[0];
+				$pt_attribute = $controlPeriodAttribute[1];
+			}
+			if ($connectionNodeType == "transform")
+			{	
+				string $controlPeriodAttribute[] = pt_nameDivide($attributeConnection, ".");
+				$pt_controller = $controlPeriodAttribute[0];
+				$pt_attribute = $controlPeriodAttribute[1];
+			}
+			if ($connectionNodeType == "character")
+			{
+				string $controlPeriodAttribute[] = pt_nameDivide($attributeConnection, ".");
+				string $beforeLastPeriod = $controlPeriodAttribute[0];
+				string $afterLastPeriod = $controlPeriodAttribute[1];
+				//get namespace
+				string $controlColonAttribute[] = pt_nameDivide($beforeLastPeriod, ":");
+				string $namespace = ($controlColonAttribute[0]+":");				
+				string $control_Attribute[] = pt_nameDivide($afterLastPeriod, "_");
+				$pt_controller = ($namespace + $control_Attribute[0]); ////////////////////////most likely a better way of getting the namespace rather than assuming
+				$pt_attribute = $control_Attribute[1];
+				//print ($increment + ".) Controller = " + $pt_controller + "	Attribute = " + $pt_attribute + "	Connection = " + $attributeConnection + "\n");		
+			}
+					
+			$tmpAttrPath = ($pt_controller + "." + $pt_attribute);
+			
+			if (`objExists $tmpAttrPath`)
+			{
+				$pt_global_selection[size($pt_global_selection)] = $pt_controller;
+				$pt_global_attribute[size($pt_global_attribute)] = $pt_attribute;
+			}else{			
+					print ($increment + ".) Not copied, deemed unimportant or incompatible. Curve Name = " + $crv + "	Node Type = " + $connectionNodeType + "\n");		
+			}
+		}else
+		{
+			print ($increment + ".) Not copied. Most likely referenced anim curve. Curve Name = " + $crv + "\n");		
+		}
+		$increment = $increment + 1;
+	}	
+	
+	//copy all animated curves
+	for ($sel in $pt_global_selection)
+	{
+		select -add $sel;
+	}
+	
+	copyKey `ls -sl`;	
+		
+	int $no_OfCurves = size($animCurves);
+	int $no_OfAttrs = size($pt_global_attribute);
+	int $no_OfCtrls = size($pt_global_selection);
+	print ("Number of controllers = " + $no_OfCtrls + "		Number of attributes = " + $no_OfAttrs + "		From a possible = " + $no_OfCurves + " curves. \n");
+	if ($no_OfAttrs!=$no_OfCtrls)
+	{		
+		error "Different number of controls and attributes";
+	}
+}
+global proc pt_pasteCurves()
+{
+	global string $pt_global_attribute[];
+	global string $pt_global_selection[];
+	string $target_attributes[];
+	string $missing_targets[];
+	int $no_OfAttrs = size($pt_global_attribute);
+	int $no_OfCtrls = size($pt_global_selection);
+
+	if ($no_OfAttrs!=$no_OfCtrls)
+	{
+		print ("Number of Ctrls = " + $no_OfAttrs + "  Attributes = " +$no_OfCtrls + "\n");
+		error "Different number of controls and attributes";
+	}
+	
+	string $pasteOption = `radioCollection -query -select pasteOptions`;
+    string $pasteFrameNumber = `textField -query -text frameNumber`;
+	
+	for ($i=0; $i<size($pt_global_selection); ++$i)
+	{
+		string $pt_Controller = $pt_global_selection[$i];
+		string $pt_Attribute = $pt_global_attribute[$i];
+		string $targetAttribute = ($pt_Controller+"."+$pt_Attribute);
+		
+		//print ("Attribute path = " + $targetAttribute + "		Controller Path = " + $pt_Controller + "		Attribute = " + $pt_Attribute + "\n");
+		
+		//Test if object exists if not create an empty group to temporarily hold the info
+		if (!`objExists $pt_Controller`)
+		{
+			//print ($pt_Controller + "Doesn't exist creating an empty group with relevant attribute \n");
+			group -em -name $pt_Controller;
+			$missing_targets[size($missing_targets)]=$pt_Controller;
+		}
+/*		else{
+			print ($pt_Controller + " Exists. \n");
+		}	
+*/		
+		//Test if the attribute exists, if not add it to the object
+		if (!`objExists $targetAttribute`)
+		{
+			//print("Adding attribute to " + $pt_Controller + " \n");
+			addAttr -ln $pt_Attribute -at double $pt_Controller;
+			setAttr -e -k on $targetAttribute;
+		}
+/*		else{
+			print ($targetAttribute + " Exists. \n");
+		}
+*/		
+		//if attribute and object exist then add it to the selection
+		
+		if (!`objExists $targetAttribute`)
+		{
+			print ($targetAttribute + " Does not exist \n");
+		}else{		
+			$target_attributes[$i]=$targetAttribute;
+		}
+	}
+	select -cl;
+	for ($attr in $target_attributes)
+	{
+		select -add $attr;
+	}
+	pasteKey -option $pasteOption -time $pasteFrameNumber;
+	//Cleanup scene - Move all newly created missing tmp anim holders to group 
+	if (size($missing_targets)>=1)
+	{	
+		string $target_Orphange = "AnimHolderForMissingNodes";
+		group -em -name $target_Orphange;
+		for ($target in $missing_targets)
+		{
+			parent $target $target_Orphange;
+		}
+	}
+}
+
+global proc pt_copyPasteKeysTools()
+{
+	string $fmWindowName = "fmWindow10";
+	
+		// check if the window already exists.
+		// Delete it and remove Preferences if necessary
+	if(`window -ex $fmWindowName`)
+		{
+			deleteUI $fmWindowName;
+		}
+	float $UIwidth = 200;
+	// create a window and store the name   
+	window -title "Copy Paste Animation" 
+	-w $UIwidth
+	-h 100 
+	"fmWindow10";
+	frameLayout -collapsable false -label "Copy Paste Animation" 
+			-w $UIwidth
+			-h 50;
+				 rowColumnLayout -numberOfColumns 2
+				 -columnWidth 1 ($UIwidth/2)
+				-columnWidth 2 ($UIwidth/2);
+				button -label "Copy Animation" -command "pt_copyCurves";
+				button -label "Paste Animation" -command "pt_pasteCurves";
+				setParent ..;
+			setParent ..;
+		setParent ..;
+	
+	rowColumnLayout -numberOfColumns 3;
+			radioCollection pasteOptions;		
+						// add some radio buttons to the collection
+						radioButton -label "Replace" replaceCompletely ;
+						radioButton -label "Insert" insert;
+						radioButton -label "Merge" merge;
+			radioCollection -edit -select replaceCompletely  pasteOptions;
+		setParent ..;
+	setParent ..;
+	columnLayout -adj 1;
+			text -label "Paste frame:";
+			textField -text "0" frameNumber;
+		setParent ..;
+
+	showWindow;
+	window -e -wh ($UIwidth+4) 120 $fmWindowName;
+}  

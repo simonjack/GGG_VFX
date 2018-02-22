@@ -1,0 +1,47 @@
+global proc string[] pt_nameSpace_Controller(){
+	string $nameSpace;
+	string $controllerName;
+
+	string $deconstruct_selection[] = `ls -sl`;
+	string $controlName = $deconstruct_selection[0];
+	string $firstParts[];
+
+	//counts number of parts in name using : as the seperator
+	int $numTokens = `tokenize $controlName ":" $firstParts`;
+
+	if( $numTokens == 0 )
+	{
+		   print( "To err is human.  In other words it's your fault." );
+		   
+	}
+	if( $numTokens == 1 )
+	{
+			$controllerName = $controlName;
+	}
+	//if it is made up of more than one part destruct the name giving $nameSpace as the namespaces before controller name and $controllerName as the constrollers name
+	if ($numTokens > 1)
+		{
+			string $buffer[] ;
+
+			tokenize $controlName ":" $buffer ;  
+			int $bufferSize = size($buffer);
+			int $nameSpaceQuantity = $bufferSize-1;
+			string $nameSpaceS[];
+			clear $nameSpaceS;
+
+			$controllerName = $buffer[$nameSpaceQuantity] ;  
+
+			for ($i=0;$i<$nameSpaceQuantity;++$i)
+				{
+					$nameSpaceS[size($nameSpaceS)] = $buffer[$i];
+					$nameSpaceS[size($nameSpaceS)] = ":";
+				}
+			$nameSpace = stringArrayToString($nameSpaceS, "");
+			
+		}
+		//print ("Name Spaces = " + $nameSpace + " Controller Name = " +  $controllerName);
+		string $nameSegs[];
+		$nameSegs = {$nameSpace, $controllerName};
+		//print ("Name Spaces = " + $nameSegs[0] + " Controller Name = " +  $nameSegs[1]);
+		return $nameSegs;
+}

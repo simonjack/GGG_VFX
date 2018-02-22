@@ -1,0 +1,401 @@
+//fkik switch for tsmg rigs
+global proc pt_TSMG_FKIKswitch(){
+	//initiate variables and arrays
+	int $whatLimb = 0;
+	int $aimVector;
+	int $upVector;
+	int $locElbowOFFSET;
+	int $amIaLeg = 0;
+	int $IKorFK  = 5;
+
+	string $locWrist;
+	string $locElbow;
+	string $grpElbow;
+	string $locShoulder;
+	string $grpShoulder;
+	string $tsmgFKIKSwitch;
+
+	string $UpperLimbJnt;
+	string $LowerLimbJnt;
+	string $EndLimbJnt;
+	string $UpperLimbCtrl;
+	string $LowerLimbCtrl;
+	string $EndLimbCtrl;
+	string $PoleVector;
+	string $IKWrist;
+	string $UpperBody;
+
+	string $tsmgNeckJnt[];
+	string $tsmgUpperLimbJnt[];
+	string $tsmgLowerLimbJnt[];
+	string $tsmgEndLimbJnt[];
+	string $tsmgUpperLimbCtrl[];
+	string $tsmgLowerLimbCtrl[];
+	string $tsmgEndLimbCtrl[];
+	string $tsmgPoleVector[];
+	string $tsmgIKWrist[];
+	string $tsmgUpperBody[];
+			
+	string $selection[] = `ls -sl`;
+	string $controlName = $selection[0];
+	string $parts[];
+	string $bodyPart;
+	
+	//splitting selected object up into two parts, the namespace(s) and controller name
+	string $nameSegments[];
+	$nameSegments = pt_nameSpace_Controller();
+	string $references = $nameSegments[0];
+	string $controllerName = $nameSegments[1];
+
+	int $numTokens = `tokenize $controllerName "_" $parts`;
+
+	if( $numTokens == 0 )
+	{
+		   print( "The object selected is not compatible, with this script" );
+	}
+	
+	$bodyPart = $parts[0];
+
+	//test what body part it is
+	if (`gmatch $bodyPart "*arm*"` == 1 || `gmatch $bodyPart "*Arm*"` == 1){
+
+			if (`gmatch $bodyPart "*left*"` == 1 || `gmatch $bodyPart "*Left*"` == 1){
+				print "Leftarm";
+				$whatLimb = 3;
+				$locElbowOFFSET = 10;
+				$aimVector = 1;
+				$upVector = 1;
+				} else
+				if (`gmatch $bodyPart "*right*"` == 1 || `gmatch $bodyPart "*Right*"` == 1){
+					print "Rightarm";
+					$whatLimb = 4;
+					$locElbowOFFSET = -10;
+					$aimVector = -1;
+					$upVector = -1;
+					} else {
+						print "arm";
+						$whatLimb = 3;
+						$locElbowOFFSET = 10;
+						$aimVector = 1;
+						$upVector = 1;
+						};
+				
+			$amIaLeg = 0;
+
+			$locWrist = "loc_Wrist";
+			$locElbow = "loc_Elbow";
+			$grpElbow = "grp_Elbow";
+			$locShoulder = "loc_Shoulder";
+			$grpShoulder = "grp_Shoulder";
+			$locSideTester = "loc_LeftRight";
+			$grpSideTester = "grp_LeftRight";
+					
+			$UpperLimbJnt = ($parts[0] + "_LoResUpperArm");
+			$LowerLimbJnt = ($parts[0] + "_LoResLowerArm");
+			$EndLimbJnt = ($parts[0] + "_LoResHand");
+			$UpperLimbCtrl = ($parts[0] + "_UpperArmControl");
+			$LowerLimbCtrl = ($parts[0] + "_LowerArmControl");
+			$EndLimbCtrl = ($parts[0] + "_HandControl");
+			$PoleVector = ($parts[0] + "_ArmIKElbowControl");
+			$IKWrist = ($parts[0] + "_ArmIKControl");
+			$UpperBody = "TSMG_upper_body";
+			
+			$tsmgUpperLimbJnt = `ls -r 1 ($parts[0] + "_LoResUpperArm")`;
+			$tsmgLowerLimbJnt = `ls -r 1 ($parts[0] + "_LoResLowerArm")`;
+			$tsmgEndLimbJnt = `ls -r 1 ($parts[0] + "_LoResHand")`;
+			$tsmgUpperLimbCtrl = `ls -r 1 ($parts[0] + "_UpperArmControl")`;
+			$tsmgLowerLimbCtrl = `ls -r 1 ($parts[0] + "_LowerArmControl")`;
+			$tsmgEndLimbCtrl = `ls -r 1 ($parts[0] + "_HandControl")`;
+			$tsmgPoleVector = `ls -r 1 ($parts[0] + "_ArmIKElbowControl")`;
+			$tsmgIKWrist = `ls -r 1 ($parts[0] + "_ArmIKControl")`;
+			$tsmgFKIKSwitch = ($parts[0] + "_FKIKSwitch");
+			$tsmgUpperBody = `ls -r 1 "TSMG_upper_body"`;
+			$IKorFK = `getAttr ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch)`;
+	};
+
+	if (`gmatch $bodyPart "*leg*"` == 1 || `gmatch $bodyPart "*Leg*"` == 1){
+
+			if (`gmatch $bodyPart "*left*"` == 1 || `gmatch $bodyPart "*Left*"` == 1){
+				print "Leftleg";
+				$whatLimb = 2;
+				$locElbowOFFSET = 10;
+				$aimVector = 1;
+				$upVector = 1;   
+				} else
+				if (`gmatch $bodyPart "*right*"` == 1 || `gmatch $bodyPart "*Right*"` == 1){
+					print "Rightleg";  		    
+					$whatLimb = 1;
+					$locElbowOFFSET = 10;
+					$aimVector = 1;
+					$upVector = 1;
+					} else {
+						print "leg";
+					$whatLimb = 1;
+					$locElbowOFFSET = 10;
+					$aimVector = 1;
+					$upVector = 1;
+					};
+
+			$amIaLeg = 1;
+
+			$locWrist = "loc_Ankle";
+			$locElbow = "loc_Knee";
+			$grpElbow = "grp_Knee";
+			$locShoulder = "loc_Thigh";
+			$grpShoulder = "grp_Thigh";
+			$locSideTester = "loc_LeftRight";
+			$grpSideTester = "grp_LeftRight";       
+					
+			$UpperLimbJnt = ($parts[0] + "_LoResUpperLeg");
+			$LowerLimbJnt = ($parts[0] + "_LoResLowerLeg");
+			$EndLimbJnt = ($parts[0] + "_LoResFoot");
+			$UpperLimbCtrl = ($parts[0] + "_UpperLegControl");
+			$LowerLimbCtrl = ($parts[0] + "_LowerLegControl");
+			$EndLimbCtrl = ($parts[0] + "_FootControl");
+			$PoleVector = ($parts[0] + "_LegIKKneeControl");
+			$IKWrist = ($parts[0] + "_LegIKControl");
+			$UpperBody = "TSMG_upper_body";
+			
+			$tsmgUpperLimbJnt = `ls -r 1 ($parts[0] + "_LoResUpperLeg")`;
+			$tsmgLowerLimbJnt = `ls -r 1 ($parts[0] + "_LoResLowerLeg")`;
+			$tsmgEndLimbJnt = `ls -r 1 ($parts[0] + "_LoResFoot")`;
+			$tsmgUpperLimbCtrl = `ls -r 1 ($parts[0] + "_UpperLegControl")`;
+			$tsmgLowerLimbCtrl = `ls -r 1 ($parts[0] + "_LowerLegControl")`;
+			$tsmgEndLimbCtrl = `ls -r 1 ($parts[0] + "_FootControl")`;
+			$tsmgPoleVector = `ls -r 1 ($parts[0] + "_LegIKKneeControl")`;
+			$tsmgIKWrist = `ls -r 1 ($parts[0] + "_LegIKControl")`;
+			$tsmgFKIKSwitch = ($parts[0] + "_FKIKSwitch");
+			$tsmgUpperBody = `ls -r 1 "TSMG_upper_body"`;
+			$IKorFK = `getAttr ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch)`;
+	};
+
+	if ( $IKorFK  == 0) //Limb is fk, switching to ik
+	{
+		//Create locators and groups required for getting translation and rotational values
+		spaceLocator -p 0 0 0 -n $locWrist;
+		spaceLocator -p 0 0 0 -n $locElbow;
+		group -n $grpElbow; xform -os -piv 0 0 0;
+		spaceLocator -p 0 0 0 -n $locShoulder;
+		group -n $grpShoulder; xform -os -piv 0 0 0;
+
+		setAttr ($locWrist + "Shape.localScaleZ") 15;
+		setAttr ($locWrist + "Shape.localScaleX") 15;
+		setAttr ($locWrist + "Shape.localScaleY") 15;
+
+		setAttr ($locElbow + "Shape.localScaleZ") 15;
+		setAttr ($locElbow + "Shape.localScaleX") 15;
+		setAttr ($locElbow + "Shape.localScaleY") 15;
+
+		setAttr ($locShoulder + "Shape.localScaleZ") 15;
+		setAttr ($locShoulder + "Shape.localScaleX") 15;
+		setAttr ($locShoulder + "Shape.localScaleY") 15;
+
+		//constrain to joints, to get fk joint position and rotation
+		select -r $tsmgEndLimbJnt[0];
+		select -tgl $locWrist ;
+		parentConstraint -weight 1;
+
+		select -r $tsmgUpperLimbJnt[0];
+		select -add $grpShoulder ;
+		parentConstraint -weight 1;
+
+		select -r $tsmgLowerLimbJnt[0];
+		select -add $grpElbow ;
+		parentConstraint -weight 1;
+
+		//remove constraints
+		select -r ($grpShoulder + "_parentConstraint1") ;
+		select -add ($grpElbow + "_parentConstraint1") ;
+		select -add ($locWrist + "_parentConstraint1") ;
+		doDelete;
+
+		//Set Limb to IK
+		setAttr ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch) 1;
+
+		if ($amIaLeg == 0)
+		{
+			//Line up Wrist
+			select -r $locWrist ;
+			select -tgl $tsmgIKWrist[0];
+			parentConstraint -weight 1;
+
+			//key translate and rotate on wrist
+			setKeyframe ($tsmgIKWrist[0] + ".tx");
+			setKeyframe ($tsmgIKWrist[0] + ".ty");
+			setKeyframe ($tsmgIKWrist[0] + ".tz");
+			setKeyframe ($tsmgIKWrist[0] + ".rx");
+			setKeyframe ($tsmgIKWrist[0] + ".ry");
+			setKeyframe ($tsmgIKWrist[0] + ".rz");
+
+			//delete constraint
+			select -r ($IKWrist + "_parentConstraint1") ;
+			doDelete;
+		}
+		else if ($amIaLeg == 1)
+		{
+			//create locators for finding offset between ik control and ankle joint
+			spaceLocator -p 0 0 0 -n loc_AnkleJnt;
+			spaceLocator -p 0 0 0 -n loc_IKCtrl;
+			 
+			setAttr "loc_AnkleJntShape.localScaleZ" 15;
+			setAttr "loc_AnkleJntShape.localScaleX" 15;
+			setAttr "loc_AnkleJntShape.localScaleY" 15;
+			setAttr "loc_IKCtrlShape.localScaleZ" 15;
+			setAttr "loc_IKCtrlShape.localScaleX" 15;
+			setAttr "loc_IKCtrlShape.localScaleY" 15;
+
+			//align locators to their respective controller or joint
+			select -r $tsmgEndLimbJnt[0];
+			select -tgl loc_AnkleJnt ;
+			parentConstraint -weight 1;
+
+			select -r $tsmgIKWrist[0];
+			select -tgl loc_IKCtrl ;
+			parentConstraint -weight 1;
+
+			//delete constraints
+			select -r loc_AnkleJnt_parentConstraint1 ;
+			select -add loc_IKCtrl_parentConstraint1 ;
+			doDelete;
+
+			//parent locators so the ankle locator dictates where the foot controller will be
+			parent loc_IKCtrl loc_AnkleJnt ;
+
+			//align ankle locator to fk ankle position
+			select -r $locWrist ;
+			select -add loc_AnkleJnt ;
+			parentConstraint -weight 1;
+
+			//align ik controller to locator and therefore fk position and rotation
+			select -r loc_IKCtrl ;
+			select -tgl $tsmgIKWrist[0];
+			parentConstraint -weight 1;
+
+			//key translate and rotate values on ik controller
+			setKeyframe ($tsmgIKWrist[0] + ".tx");
+			setKeyframe ($tsmgIKWrist[0] + ".ty");
+			setKeyframe ($tsmgIKWrist[0] + ".tz");
+			setKeyframe ($tsmgIKWrist[0] + ".rx");
+			setKeyframe ($tsmgIKWrist[0] + ".ry");
+			setKeyframe ($tsmgIKWrist[0] + ".rz");
+
+			//clean up locators and constraints
+			select -r ($IKWrist + "_parentConstraint1");
+			select -add loc_AnkleJnt;
+			select -add loc_IKCtrl;
+			doDelete;
+
+		};
+
+		//setup Aim constraint for pole vector
+		setAttr ($locShoulder + ".translateZ") $locElbowOFFSET;
+		select -r $locElbow ;
+		select -tgl $tsmgPoleVector[0];
+		aimConstraint -offset 0 0 0 -weight 1 -aimVector $aimVector 0 0 -upVector 0 0 $upVector -worldUpType "object" -worldUpObject $locShoulder;
+
+		//key rotate on pole vector
+		setKeyframe ($tsmgPoleVector[0] + ".rx");
+		setKeyframe ($tsmgPoleVector[0] + ".ry");
+		setKeyframe ($tsmgPoleVector[0] + ".rz");
+
+		//delete constraint
+		select -r ($PoleVector + "_aimConstraint1");
+		
+
+		//clean up scene
+		select -r $locWrist;
+		select -add $grpElbow;
+		select -add $grpShoulder;
+		doDelete;
+
+	}
+	else if ( $IKorFK == 1) //Limb is ik, switching to fk
+	{
+		if ($amIaLeg == 0)
+		{
+			spaceLocator -p 0 0 0 -n $locWrist;
+			spaceLocator -p 0 0 0 -n $locElbow;
+			spaceLocator -p 0 0 0 -n $locShoulder;
+			
+			select -r $tsmgUpperLimbJnt[0];
+			select -tgl $locShoulder;
+			parentConstraint -weight 1;
+			select -r ($locShoulder + "_parentConstraint1");
+			doDelete;
+			
+			float $lowerArmRotY = `getAttr ($tsmgLowerLimbJnt[0] + ".rotateY")`;
+			
+			select -r $tsmgEndLimbJnt[0];
+			select -tgl $locWrist;
+			parentConstraint -weight 1;
+			select -r ($locWrist + "_parentConstraint1");
+			doDelete;
+			
+			//set switch to fk
+			setAttr ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch) 0;
+		
+			select -r $locShoulder ;
+			select -tgl $tsmgUpperLimbCtrl[0];
+			orientConstraint -offset 0 0 0 -weight 1;
+		
+			setAttr ($tsmgLowerLimbCtrl[0] + ".rotateY") $lowerArmRotY;
+		 
+			select -r $locWrist ;
+			select -tgl $tsmgEndLimbCtrl[0];
+			orientConstraint -offset 0 0 0 -weight 1;
+			
+			setKeyframe ($tsmgUpperLimbCtrl[0] + ".rotateX");
+			setKeyframe ($tsmgUpperLimbCtrl[0] + ".rotateY");
+			setKeyframe ($tsmgUpperLimbCtrl[0] + ".rotateZ");
+		
+			setKeyframe ($tsmgLowerLimbCtrl[0] + ".rotateY");
+		
+			setKeyframe ($tsmgEndLimbCtrl[0] + ".rotateX");
+			setKeyframe ($tsmgEndLimbCtrl[0] + ".rotateY");
+			setKeyframe ($tsmgEndLimbCtrl[0] + ".rotateZ");
+		
+			select -r ($UpperLimbCtrl + "_orientConstraint1");
+			select -add ($EndLimbCtrl + "_orientConstraint1");
+			doDelete;
+			
+			select -r $locWrist;
+			select -add $locElbow;
+			select -add $locShoulder;
+			doDelete;
+		}
+		else if ($amIaLeg == 1)
+		{
+			float $upperArmRotX = `getAttr ($tsmgUpperLimbJnt[0] + ".rotateX")`;
+			float $upperArmRotY = `getAttr ($tsmgUpperLimbJnt[0] + ".rotateY")`;
+			float $upperArmRotZ = `getAttr ($tsmgUpperLimbJnt[0] + ".rotateZ")`;
+
+			float $lowerArmRotY = `getAttr ($tsmgLowerLimbJnt[0] + ".rotateY")`;
+
+			float $handRotX = `getAttr ($tsmgEndLimbJnt[0] + ".rotateX")`;
+			float $handRotY = `getAttr ($tsmgEndLimbJnt[0] + ".rotateY")`;
+			float $handRotZ = `getAttr ($tsmgEndLimbJnt[0] + ".rotateZ")`;
+
+			setAttr ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch) 0;
+
+			setAttr ($tsmgUpperLimbCtrl[0] + ".rotateX") $upperArmRotX;
+			setAttr ($tsmgUpperLimbCtrl[0] + ".rotateY") $upperArmRotY;
+			setAttr ($tsmgUpperLimbCtrl[0] + ".rotateZ") $upperArmRotZ;
+
+			setAttr ($tsmgLowerLimbCtrl[0] + ".rotateY") $lowerArmRotY;
+
+			setAttr ($tsmgEndLimbCtrl[0] + ".rotateX") $handRotX;
+			setAttr ($tsmgEndLimbCtrl[0] + ".rotateY") $handRotY;
+			setAttr ($tsmgEndLimbCtrl[0] + ".rotateZ") $handRotZ;
+
+			setKeyframe ($tsmgUpperLimbCtrl[0] + ".rotateX");
+			setKeyframe ($tsmgUpperLimbCtrl[0] + ".rotateY");
+			setKeyframe ($tsmgUpperLimbCtrl[0] + ".rotateZ");
+
+			setKeyframe ($tsmgLowerLimbCtrl[0] + ".rotateY");
+
+			setKeyframe ($tsmgEndLimbCtrl[0] + ".rotateX");
+			setKeyframe ($tsmgEndLimbCtrl[0] + ".rotateY");
+			setKeyframe ($tsmgEndLimbCtrl[0] + ".rotateZ");
+		};
+	};
+};

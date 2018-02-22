@@ -1,0 +1,130 @@
+//create global variable/ array
+//global string $allControllers[];
+//set to zero
+//$allControllers = {};
+global int $numberBoxCTRL;
+
+global proc pt_setupCTRL(int $constraintSetup[]) 
+{
+	string $selection[] = `ls -sl`;
+	int $ctrlShape = $constraintSetup[0];
+	string $ctrlType[] = {"ARROW", "BOX", "CIRCLE", "CROSS", "DIAMOND", "ROTATE", "SPHERICAL"};
+	if (size($selection)==0)
+			{
+			
+			string $locExist = ("loc_"+$ctrlType[$ctrlShape]+"01");
+			if (`objExists $locExist`)
+				{
+					string $bits;
+					string $paritions[];
+					string $thisCTRL[] = `duplicate -rr -renameChildren $locExist`;
+					select -r $thisCTRL[0];
+					string $partitions[] = `ls -dag -ap -sl`;	
+					string $bitAndBobs[] ={$partitions[0],$partitions[2],$partitions[3]};
+					for ($bits in $bitAndBobs)
+						{
+							setAttr ($bits + ".rotateX") 0;
+							setAttr ($bits + ".rotateY") 0;
+							setAttr ($bits + ".rotateZ") 0;
+							setAttr ($bits + ".translateX") 0;
+							setAttr ($bits + ".translateY") 0;
+							setAttr ($bits + ".translateZ") 0;
+						}
+					select -cl;				
+				}
+			else
+				{
+					string $baseName = ($ctrlType[$ctrlShape]+"01");
+					pt_createCTRL($baseName,$ctrlShape);		
+					select -cl;
+				}
+			}
+		
+	for ($sel in $selection)
+		{
+			string $allControllers[];
+			string $nameParts[];
+			string $newName=0;
+			string $objectName = $sel ;  
+			string $buffer[] ;  
+
+			tokenize $objectName ":" $buffer ;  
+			  
+			string $objectWithoutNamespace = $buffer[size($buffer)-1] ;  
+
+			//counts number of parts in name using : as the seperator
+			int $numTokens = `tokenize $objectWithoutNamespace "_" $nameParts`;
+			
+			if (`gmatch $nameParts[0] "*jnt*"` == 1 ||`gmatch $nameParts[0] "*ctrl*"` == 1 ||`gmatch $nameParts[0] "*grp*"` == 1 ||`gmatch $nameParts[0] "*loc*"` == 1)
+			{			
+				string $newParts[];
+				//string $select[] = `ls -sl`;	//just an easy way for me to get an array
+				int $removeIndex = 0; //this is the index you want removed
+				$newParts = stringArrayRemove ({$nameParts[$removeIndex]},$nameParts);
+
+				for ($parts in $newParts)
+					{
+						if ($newName == 0)
+							{
+								$newName = $parts;
+							}
+						else
+							{
+								$newName = ($newName +"_"+ $parts);
+							}
+					}
+
+				if ($newName == 0)
+					{
+						 $newName = $objectName;
+					}
+			}
+			else
+				{
+					$newName = $objectWithoutNamespace; 
+				}
+			group -em -name locationFinder;
+			parentConstraint $sel locationFinder;    
+			float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+			float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+			
+			string $ctrlComponents[] = pt_createCTRL($newName,$ctrlShape);
+			string $locCTRL = $ctrlComponents[0];
+			string $grpCTRL = $ctrlComponents[1]; 
+			string $ctrlCTRL = $ctrlComponents[2]; 
+			
+			move -rpr $position[0] $position[1] $position[2] $locCTRL;
+			rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $locCTRL;
+
+			delete locationFinder;
+			
+			if( `objExists Xtra_CTRLS` )
+				{
+					parent $locCTRL Xtra_CTRLS;
+				} 
+				else 
+				{
+					group -em -name Xtra_CTRLS;
+					parent $locCTRL Xtra_CTRLS;
+				}
+			
+			hide ($locCTRL + "Shape");
+
+			//initiate global variable within procedure
+			global string $allControllers[];
+			//add object to array
+			$allControllers[size($allControllers)] = $ctrlCTRL;
+			// select all handles stored in global variable
+			select $allControllers;
+			
+			if ($constraintSetup[1]==1 || $constraintSetup[2]==1 || $constraintSetup[3]==1)
+			{
+				pt_constrain($ctrlCTRL, $sel, $constraintSetup);
+			}
+			if (size($allControllers)==size($selection))
+			{
+				clear($allControllers);
+			}
+		}
+		
+}

@@ -1,0 +1,103 @@
+global proc pt_rigQUAD()
+{
+	select -cl  ;
+	joint -p 0 0 0 ;
+	setAttr "joint1.radius" 4;
+
+	for( $i=1; $i<50; ++$i)
+		{
+		  select -r joint1 ;
+		  duplicate -rr;  
+		};
+
+	////////////////////////////////////////////////////////////////////////////////
+
+	rename "joint1" "root";
+	rename "joint2" "jnt_hips";
+	rename "joint3" "jnt_L_Rear_UpperLeg";
+	rename "joint4" "jnt_R_Rear_UpperLeg";
+	rename "joint5" "jnt_R_Rear_LowerLeg";
+	rename "joint6" "jnt_L_Rear_LowerLeg";
+	rename "joint7" "jnt_R_Rear_Heel";
+	rename "joint8" "jnt_L_Rear_Heel";
+	rename "joint9" "jnt_R_Rear_Foot";
+	rename "joint10" "jnt_L_Rear_Foot";
+	rename "joint11" "jnt_midTorso";
+	rename "joint12" "jnt_L_Lead_Foot";
+	rename "joint13" "jnt_R_Lead_Foot";
+	rename "joint14" "jnt_L_Lead_Heel";
+	rename "joint15" "jnt_R_Lead_Heel";
+	rename "joint16" "jnt_L_Lead_LowerLeg";
+	rename "joint17" "jnt_R_Lead_LowerLeg";
+	rename "joint19" "jnt_L_Lead_UpperLeg";
+	rename "joint18" "jnt_R_Lead_UpperLeg";
+	rename "joint20" "jnt_chest";
+	rename "joint21" "jnt_neck";
+	rename "joint22" "jnt_head";
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	
+	parentConstraint spine1_loResSpine1 root;
+	parentConstraint rightLeg2_LoResToe jnt_R_Rear_Foot;
+	parentConstraint leftLeg2_LoResToe jnt_L_Rear_Foot;
+	parentConstraint leftLeg2_LoResFoot jnt_L_Rear_Heel;	
+	parentConstraint leftLeg2_LoResLowerLeg jnt_L_Rear_LowerLeg;	
+	parentConstraint rightLeg2_LoResFoot jnt_R_Rear_Heel;	
+	parentConstraint rightLeg2_LoResLowerLeg jnt_R_Rear_LowerLeg;	
+	parentConstraint rightLeg2_LoResUpperLeg jnt_R_Rear_UpperLeg;	
+	parentConstraint leftLeg2_LoResUpperLeg  jnt_L_Rear_UpperLeg ;
+	parentConstraint spine1_loResPelvis jnt_hips ;
+	parentConstraint rightLeg1_LoResToe jnt_R_Lead_Foot ;
+	parentConstraint rightLeg1_LoResFoot jnt_R_Lead_Heel ;
+	parentConstraint rightLeg1_LoResLowerLeg jnt_R_Lead_LowerLeg ;
+	parentConstraint leftLeg1_LoResToe jnt_L_Lead_Foot ;
+	parentConstraint leftLeg1_LoResFoot jnt_L_Lead_Heel ;
+	parentConstraint leftLeg1_LoResLowerLeg jnt_L_Lead_LowerLeg ;
+	parentConstraint leftLeg1_LoResUpperLeg jnt_L_Lead_UpperLeg ;
+	parentConstraint spine1_loResSpine3 jnt_chest ;
+	parentConstraint spine1_loResSpine2 jnt_midTorso ;
+	parentConstraint rightLeg1_LoResUpperLeg jnt_R_Lead_UpperLeg ;
+	parentConstraint head1_neck jnt_neck ;
+	parentConstraint head1_head jnt_head ;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+
+	setAttr "jnt_L_Rear_Foot.side" 1;
+	setAttr "jnt_L_Rear_Foot.type" 5;
+	setAttr "jnt_R_Rear_Foot.side" 2;
+	setAttr "jnt_R_Rear_Foot.type" 5;
+	setAttr "jnt_R_Rear_Heel.side" 2;
+	setAttr "jnt_R_Rear_Heel.type" 4;
+	setAttr "jnt_L_Rear_Heel.side" 1;
+	setAttr "jnt_L_Rear_Heel.type" 4;
+	setAttr "jnt_R_Rear_LowerLeg.side" 2;
+	setAttr "jnt_R_Rear_LowerLeg.type" 3;
+	setAttr "jnt_L_Rear_LowerLeg.side" 1;
+	setAttr "jnt_L_Rear_LowerLeg.type" 3;
+	setAttr "jnt_R_Rear_UpperLeg.side" 2;
+	setAttr "jnt_R_Rear_UpperLeg.type" 2;
+	setAttr "jnt_L_Rear_UpperLeg.side" 1;
+	setAttr "jnt_L_Rear_UpperLeg.type" 2;
+	setAttr "jnt_hips.type" 18;
+	setAttr -type "string" jnt_hips.otherType "Waist";
+	setAttr "root.type" 1;
+	setAttr "jnt_midTorso.type" 6;
+	setAttr "jnt_chest.type" 18;
+	setAttr -type "string" jnt_chest.otherType "Chest";
+	setAttr "jnt_L_Lead_UpperLeg.side" 1;
+	setAttr "jnt_L_Lead_UpperLeg.type" 9;
+	setAttr "jnt_R_Lead_UpperLeg.side" 2;
+	setAttr "jnt_R_Lead_UpperLeg.type" 9;
+	setAttr "jnt_L_Lead_LowerLeg.side" 1;
+	setAttr "jnt_L_Lead_LowerLeg.type" 10;
+	setAttr "jnt_R_Lead_LowerLeg.side" 2;
+	setAttr "jnt_R_Lead_LowerLeg.type" 10;
+	setAttr "jnt_R_Lead_Heel.side" 2;
+	setAttr "jnt_R_Lead_Heel.type" 11;
+	setAttr "jnt_L_Lead_Heel.type" 11;
+	setAttr "jnt_L_Lead_Heel.side" 1;
+	setAttr "jnt_R_Lead_Foot.side" 2;
+	setAttr "jnt_R_Lead_Foot.type" 12;
+	setAttr "jnt_L_Lead_Foot.side" 1;
+	setAttr "jnt_L_Lead_Foot.type" 12;
+}

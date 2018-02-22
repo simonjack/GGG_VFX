@@ -1,0 +1,29 @@
+global proc pt_curveDetails(int $selecta){
+	string $animCurves[] = `keyframe -q -name`;
+	int $increment = 1;
+	string $CRVSctrls[];
+	for ($crv in $animCurves)
+	{
+		print ( "Curve (" + $increment + ") = " + $crv +"\n");
+
+		string $controlName = $crv;
+		string $controllerName;
+		string $firstParts[];
+
+		//counts number of parts in name using : as the seperator
+		int $numTokens = `tokenize $controlName "_" $firstParts`;
+		int $attributeIndex = $numTokens-1;
+		string $attributeName = $firstParts[$attributeIndex];
+		int $allButLast = $numTokens - 1;
+		stringArrayRemoveAtIndex($allButLast, $firstParts);
+		$controllerName = stringArrayToString($firstParts, "_");
+		
+		print ("Controller(" + $increment + ") = " + $controllerName + "     " + "Attribute (" + $increment + ") = " +  $attributeName +"\n");
+		$increment = $increment + 1;
+		$CRVSctrls[size($CRVSctrls)] = $controllerName;
+	}
+	if ($selecta !=0)
+	{
+		select -r $CRVSctrls;
+	}
+}

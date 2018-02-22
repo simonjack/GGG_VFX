@@ -1,0 +1,32 @@
+//align tool
+
+string $selection[] = `ls -sl`;
+
+string $target = $selection[0];
+string $obj2align = $selection[1];
+
+float $rotX;
+float $rotY;
+float $rotZ; 
+
+float $transX; 
+float $transY; 
+float $transZ; 
+
+if (size($selection)!=2){
+error "select 2 objects dick 'ed. \n";
+}
+
+group -em -name locationFinder;
+
+parentConstraint $target locationFinder;
+
+float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`;
+
+move -rpr $position[0] $position[1] $position[2] $obj2align;
+rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $obj2align;
+delete locationFinder;
+print "Fucking aligned innit?!";
+
+select $obj2align;

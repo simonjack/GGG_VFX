@@ -1,0 +1,13 @@
+global proc pt_jointSEL ()
+{  
+	//create joints on selected objects
+
+	string $selection[] = `ls -sl`;
+	select -cl;
+	for ($sel in $selection)
+		{				
+			string $obj2align = ("jntbnd_"+$sel);
+			joint -n $obj2align;	
+			
+		}
+};

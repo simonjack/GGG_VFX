@@ -1,0 +1,88 @@
+global proc string pt_cleanMergedLayerCurveName(string $curve)
+{
+	print ("Before = " + $curve + "\n");
+	string $removeTEXT = "_Merged_Layer_inputB";
+	string $newCurveName = `substitute $removeTEXT $curve  ""`;
+	print ("After = " + $newCurveName + "\n");
+	return $newCurveName;
+}
+global proc string[] pt_copyCurves()
+{
+	string $animCurves[]= `ls -typ "animCurveTL" -typ "animCurveTU" -typ "animCurveTA" -typ "animCurveTT"`;
+	int $increment = 0;
+	string $CRVSctrls[];
+	string $CRVattr[];
+	string $animatedAttributes[];
+	string $tmpAttributes[];
+	string $attrPath[];
+	string $nameSpace;
+	string $tmpAttrPath;
+	clear($CRVSctrls);
+	clear($CRVattr);
+	for ($crv in $animCurves)
+	{
+		print ( "Curve (" + $increment + ") = " + $crv +"\n");
+		
+		if (`gmatch $crv "*_Merged_Layer_inputB*"` == 1)
+		{
+			$crv = pt_cleanMergedLayerCurveName($crv);
+		}
+		
+		string $controlName = $crv;			
+		string $controllerName;
+		string $firstParts[];
+		//counts number of parts in name using _ as the seperator
+		int $numTokens = `tokenize $controlName "_" $firstParts`;
+		int $attributeIndex = $numTokens-1;
+		string $attributeName = $firstParts[$attributeIndex];
+		int $allButLast = $numTokens - 1;
+		stringArrayRemoveAtIndex($allButLast, $firstParts);
+		$controllerName = stringArrayToString($firstParts, "_");
+		
+		$tmpAttrPath = ($controllerName + "." + $attributeName);
+		print ($increment + ".) Controller = " + $controllerName + "          Attribute = " + $attributeName + "\n");
+		print ($increment + ".) atmpAttrPath = " + $tmpAttrPath + "\n"); 
+		
+		//test for name space and split return controller name and namespace if so
+		string $nameSegs[] = pt_nameSpaceFinder($controllerName);
+		string $tmp_nameSpace = $nameSegs[0];
+		string $tmp_nameCTRL = $nameSegs[1];
+		
+		//test if a name space is returned, if so controller already has namespace in name so add to array at appropriate index ($increment)
+		if ($tmp_nameSpace!="")
+		{
+			$nameSpace = $tmp_nameSpace;
+			$attrPath[$increment]=$tmpAttrPath;
+		}			
+		
+
+		$increment = $increment + 1;
+
+		$tmpAttributes[size($tmpAttributes)] = $tmpAttrPath;			
+	}
+	
+	print ("Name Space = " + $nameSpace + "\n");
+	
+	//if control does not have a namespace add the namespace and store at its relevant index ($increment)
+	for ($i=0;$i<size($tmpAttributes);++$i)
+	{		
+		$tmpAttrPath = ($nameSpace+$tmpAttributes[$i]);
+		if (`objExists $tmpAttrPath`)
+		{
+			$attrPath[$i] = $tmpAttrPath;
+		}
+	}
+	
+	//go through and test if each attribute exists in the scene
+	for ($i=0;$i<size($attrPath);++$i)
+	{
+		if (`objExists $attrPath[$i]`)
+		{
+			print ($i + ".) " + $attrPath[$i] + "\n");
+		}else
+		{
+			print ($i + ".) " + $attrPath[$i] + " <<<<<<<<<<<<<<<<<<<<<<<<<<<<< Doesnt Exist \n");
+		}
+	}
+	return $attrPath;
+}

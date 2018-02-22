@@ -1,0 +1,67 @@
+global proc pt_TSMG_mirrorSPINE(){
+
+	string $selection[] = `ls -sl`;
+	int $selSize = size($selection);
+
+	if ($selSize<1)
+	{
+	error "You need to select 1 controller of the rig you want to mirror the spine on";	
+	}
+	string $controlName = $selection[0];
+
+	string $nameSegments[];
+	$nameSegments = pt_nameSpace_Controller();
+	string $references = $nameSegments[0];
+	string $controllerName = $nameSegments[1];
+
+	string $coreCTRLS[];
+	$coreCTRLS[0] = ($references + "head1_Control");
+	$coreCTRLS[1] = ($references + "head1_neckControl");
+	$coreCTRLS[2] = ($references + "spine1_torsoIKControl");
+	$coreCTRLS[3] = ($references + "spine1_middleSpineIKControl");
+	$coreCTRLS[4] = ($references + "spine1_hipsIKControl");
+	$coreCTRLS[5] = ($references + "TSMG_upper_body");
+
+	string $coreCTRLStrans[] = {$coreCTRLS[2],$coreCTRLS[3],$coreCTRLS[4],$coreCTRLS[5]};
+	for ($ctrls in $coreCTRLS)
+		{
+			float $oldRotX = `getAttr ($ctrls + ".rotateX")`;
+			float $oldRotY = `getAttr ($ctrls + ".rotateY")`;
+			float $oldRotZ = `getAttr ($ctrls + ".rotateZ")`;
+
+			float $newRotX = $oldRotX;
+			float $newRotY = $oldRotY*-1;
+			float $newRotZ = $oldRotZ*-1;
+
+			setAttr ($ctrls + ".rotateX") $newRotX;
+			setAttr ($ctrls + ".rotateY") $newRotY;
+			setAttr ($ctrls + ".rotateZ") $newRotZ;
+		}
+	for ($ctrlsTRANS in $coreCTRLStrans)
+		{
+			float $oldTransX = `getAttr ($ctrlsTRANS + ".translateX")`;
+			float $oldTransY = `getAttr ($ctrlsTRANS + ".translateY")`;
+			float $oldTransZ = `getAttr ($ctrlsTRANS + ".translateZ")`;
+
+			float $newTransX = $oldTransX*-1;
+			float $newTransY = $oldTransY;
+			float $newTransZ = $oldTransZ;
+
+			setAttr ($ctrlsTRANS + ".translateX") $newTransX;
+			setAttr ($ctrlsTRANS + ".translateY") $newTransY;
+			setAttr ($ctrlsTRANS + ".translateZ") $newTransZ;
+		}
+	
+	float $oldTransX = `getAttr ($coreCTRLS[0] + ".translateX")`;
+	float $oldTransY = `getAttr ($coreCTRLS[0] + ".translateY")`;
+	float $oldTransZ = `getAttr ($coreCTRLS[0] + ".translateZ")`;
+
+	float $newTransX = $oldTransX*-1;
+	float $newTransY = $oldTransY;
+	float $newTransZ = $oldTransZ;
+
+	setAttr ($coreCTRLS[0] + ".translateX") $newTransX;
+	setAttr ($coreCTRLS[0] + ".translateY") $newTransY;
+	setAttr ($coreCTRLS[0] + ".translateZ") $newTransZ;
+
+}

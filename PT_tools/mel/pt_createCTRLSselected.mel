@@ -1,0 +1,279 @@
+//create global variable/ array
+global string $allControllers[];
+//set to zero
+$allControllers = {};
+
+// a function to be called when the button gets clicked.
+proc boxCTRLsel() 
+
+{
+//box control
+
+string $selection[] = `ls -sl`;
+
+for ($sel in $selection)
+{
+group -em -name locationFinder;
+parentConstraint $sel locationFinder;    
+float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+
+string $locCTRL = ("loc_" + $sel);
+string $grpCTRL = ("grp_" + $sel);
+string $ctrlCTRL = ("ctrl_" + $sel);
+
+spaceLocator -n $locCTRL;
+group -em -name $grpCTRL;
+
+string $boxCrv = `curve -d 1 -p -0.5 0.5 0.5 -p -0.5 0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 0.5 0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 -0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 -0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 -0.5 0.5 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16` ;
+select $boxCrv;
+CenterPivot;
+string $rnmBC = `rename $boxCrv $ctrlCTRL`;
+
+
+
+parent $ctrlCTRL $grpCTRL;
+parent $grpCTRL $locCTRL;
+
+move -rpr $position[0] $position[1] $position[2] $locCTRL;
+rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $locCTRL;
+
+delete locationFinder;
+
+hide ($locCTRL + "Shape");
+
+//initiate global variable within procedure
+global string $allControllers[];
+//add object to array
+$allControllers[size($allControllers)] = $ctrlCTRL;
+// select all handles stored in global variable
+select $allControllers;
+
+
+print "You have Box controllers!";
+
+}
+///////////////////////////////////////////
+}
+
+proc diamondCTRLsel() 
+
+{
+       //diamond
+
+string $selection[] = `ls -sl`;
+
+for ($sel in $selection)
+{
+group -em -name locationFinder;
+parentConstraint $sel locationFinder;    
+float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+
+string $locCTRL = ("loc_" + $sel);
+string $grpCTRL = ("grp_" + $sel);
+string $ctrlCTRL = ("ctrl_" + $sel);
+
+spaceLocator -n $locCTRL;
+group -em -name $grpCTRL;
+
+string $dmdCrv = `curve -d 1 -p 0.0 1 0 -p 0.0 0 1 -p 0.0 -1 0 -p 0.0 0 -1 -p 0.0 1 0 -p 1.0 0 0 -p 0.0 -1 0 -p -1.0 0 0 -p 0.0 1 0 -p 1.0 0 0 -p 0.0 0 1 -p -1.0 0 0 -p 0.0 0 -1 -p 1.0 0 0 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13` ;
+select $dmdCrv;
+CenterPivot;
+string $rnmDC = `rename $dmdCrv $ctrlCTRL`;
+
+parent $ctrlCTRL $grpCTRL;
+parent $grpCTRL $locCTRL;
+
+move -rpr $position[0] $position[1] $position[2] $locCTRL;
+rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $locCTRL;
+
+delete locationFinder;
+
+hide ($locCTRL + "Shape");
+
+//initiate global variable within procedure
+global string $allControllers[];
+//add object to array
+$allControllers[size($allControllers)] = $ctrlCTRL;
+// select all handles stored in global variable
+select $allControllers;
+
+print "You have diamond controllers!";
+
+}
+}
+///////////////////////////////////////////////
+proc sphericalCTRLsel() 
+
+{
+        //spherical control
+
+string $selection[] = `ls -sl`;
+
+for ($sel in $selection)
+{
+group -em -name locationFinder;
+parentConstraint $sel locationFinder;    
+float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+
+string $locCTRL = ("loc_" + $sel);
+string $grpCTRL = ("grp_" + $sel);
+string $ctrlCTRL = ("ctrl_" + $sel);
+
+spaceLocator -n $locCTRL;
+group -em -name $grpCTRL;
+
+
+//Create curves
+string $cv1[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+string $cv2[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+string $cv3[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+//Rotate curves to look like a joint
+rotate -r -os 90 0 0 $cv2[0];
+rotate -r -os 0 0 90 $cv3[0];
+//Freeze the rotated curves
+select $cv2[0]; select -add $cv3[0];
+makeIdentity -apply 1 -t 1 -r 1 -s 1 ;
+//Parent shapes of curves 2 and 3 to curve 1
+string $relCrv2[] = `listRelatives -shapes $cv2[0]`;
+string $relCrv3[] = `listRelatives -shapes $cv3[0]`;
+parent -r -shape $relCrv2[0] $cv1[0];
+parent -r -shape $relCrv3[0] $cv1[0];
+//Delete the trns node of curves 2 and 3
+select $cv2[0]; select -add $cv3[0]; doDelete;
+//Rename the joint curve
+string $rnmCrv = `rename $cv1[0] $ctrlCTRL`;
+//Delete history on joint curve
+select $rnmCrv; DeleteHistory;
+
+
+parent $ctrlCTRL $grpCTRL;
+parent $grpCTRL $locCTRL;
+
+move -rpr $position[0] $position[1] $position[2] $locCTRL;
+rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $locCTRL;
+
+delete locationFinder;
+
+hide ($locCTRL + "Shape");
+
+//initiate global variable within procedure
+global string $allControllers[];
+//add object to array
+$allControllers[size($allControllers)] = $ctrlCTRL;
+// select all handles stored in global variable
+select $allControllers;
+
+print "You have spherical controllers!";
+
+}
+}
+
+proc circleCTRLsel() 
+
+{
+//circle control
+
+
+string $selection[] = `ls -sl`;
+
+for ($sel in $selection)
+{
+group -em -name locationFinder;
+parentConstraint $sel locationFinder;    
+float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+
+string $locCTRL = ("loc_" + $sel);
+string $grpCTRL = ("grp_" + $sel);
+string $ctrlCTRL = ("ctrl_" + $sel);
+
+spaceLocator -n $locCTRL;
+group -em -name $grpCTRL;
+
+//Create curves
+string $cv1[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+
+string $rnmCrv = `rename $cv1[0] $ctrlCTRL`;
+
+parent $ctrlCTRL $grpCTRL;
+parent $grpCTRL $locCTRL;
+
+move -rpr $position[0] $position[1] $position[2] $locCTRL;
+rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $locCTRL;
+
+delete locationFinder;
+
+print "You have Circular controllers!";
+
+}
+}
+
+proc freezeSCALE() 
+
+{
+string $selection[] = `ls -sl`;
+
+for ($sel in $selection)
+{
+makeIdentity -apply true -t 0 -r 0 -s 1 -n 0;
+}
+}
+proc dickMaker() 
+
+{
+polySphere -ch off -o on -r 1.345275 -n testicle1;
+
+polySphere -ch off -o on -r 1.369634 -n testicle2;
+
+polyCylinder -ch off -o on -r 1.894623 -h 8.317728 -sc 1 -cuv 3 -n penileShaft;
+
+polySphere -ch off -o on -r 2.094711 -n dickHead;
+
+
+scale -r 0.893072 0.893072 0.893072 ;
+select -r testicle1 ;
+select -tgl testicle2 ;
+scale -r 1.439467 1.439467 1.439467 ;
+select -r penileShaft;
+move -r 0 4.20763 0 ;
+select -r testicle2 ;
+move -r 1.106893 0 2.351917 ;
+select -r testicle1 ;
+move -r -1.106893 0 2.351917 ;
+select -r dickHead ;
+move -r 0 8.106905 0 ;
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+ 
+{
+string $fmWindowName = "fmWindow09";
+
+        // check if the window already exists.
+        // Delete it and remove Preferences if necessary
+  if(`window -ex $fmWindowName`)
+        {
+            deleteUI $fmWindowName;
+        }
+       
+  // create a window and store the name   
+  window -title "Rigging Tools" -w 250 -h 300 "fmWindow09";
+ 
+        // define the layout of controls added 
+        // to the window.
+        columnLayout;
+ 
+        // create a button
+        button -label "fucking Cube controller" -command "boxCTRLsel";
+        button -label "fucking Spherical controller" -command "sphericalCTRLsel";
+        button -label "fucking Diamond Controller" -command "diamondCTRLsel";
+		button -label "fucking Circular Controller" -command "circleCTRLsel";
+		button -label "freeze Scale" -command "freezeSCALE";		
+		button -label "make me a willy" -command "dickMaker";		
+ 
+// show the window we last created
+showWindow;
+}

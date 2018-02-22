@@ -1,0 +1,23 @@
+global proc pt_destructName(){
+	string $destruct_selection[] = `ls -sl`;
+	string $destruct_objectName = $destruct_selection[0] ;  
+	string $buffer[] ;
+
+	tokenize $destruct_objectName ":" $buffer ;  
+	int $bufferSize = size($buffer);
+	int $nameSpaceQuantity = $bufferSize-1;
+	string $nameSpaceS[];
+	clear $nameSpaceS;
+
+	string $objectWithoutNamespace = $buffer[$nameSpaceQuantity] ;  
+
+	for ($i=0;$i<$nameSpaceQuantity;++$i)
+		{
+		
+		
+			$nameSpaceS[size($nameSpaceS)] = $buffer[$i];
+		    $nameSpaceS[size($nameSpaceS)] = ":";
+		}
+		$nameSpace = stringArrayToString($nameSpaceS, "");
+		print $nameSpace;		
+}

@@ -1,0 +1,30 @@
+global proc string[] pt_getAttributeList (string $ctrl)
+{
+	string $nodeName = $ctrl;
+    //Get all the custom atributes on this control
+    string $customAttr[] = `listAttr -ud $nodeName`;
+    string $udAnimName = "";
+    string $niceAttributes[];
+    if (size($niceAttributes)>0)
+    {
+        clear($niceAttributes);
+    }
+    
+    //Loop through the custom attributes and put all the animatable attributes in a string.
+    for ($each in $customAttr)
+    {
+        string $udAnim[] = `listAnimatable ($nodeName + "." + $each)`;
+        for ($anim in $udAnim)
+        {
+            string $buffer[0]; //create an array of $buffer
+            tokenize $anim "." $buffer; //store tokens in $buffer array seperated by $nodeName and . (Rig:TSMG_upper_body)
+            int $bufferSize = size($buffer);
+    
+    		int $nameSpaceQuantity = $bufferSize-1;
+            string $niceName = $buffer[$nameSpaceQuantity] ;
+            stringArrayInsertAtIndex(size($niceAttributes), $niceAttributes, $niceName);        
+        }
+    }
+    int $numberNiceAttr = size($niceAttributes);
+    return $niceAttributes;
+}

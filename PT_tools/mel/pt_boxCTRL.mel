@@ -1,0 +1,136 @@
+//create global variable/ array
+global string $allControllers[];
+//set to zero
+$allControllers = {};
+global int $numberBoxCTRL;
+
+global proc pt_boxCTRL() 
+{
+	//box control
+	string $selection[] = `ls -sl`;
+	if (size($selection)==0)
+			{
+			//global int $numberBoxCTRL;
+			if (`objExists loc_BOX01`)
+				{
+					string $bits;
+					string $paritions[];
+					string $thisCTRL[] = `duplicate -rr -renameChildren loc_BOX01`;
+					select -r $thisCTRL[0];
+					string $partitions[] = `ls -dag -ap -sl`;	
+					string $bitAndBobs[] ={$partitions[0],$partitions[2],$partitions[3]};
+					for ($bits in $bitAndBobs)
+						{
+							setAttr ($bits + ".rotateX") 0;
+							setAttr ($bits + ".rotateY") 0;
+							setAttr ($bits + ".rotateZ") 0;
+							setAttr ($bits + ".translateX") 0;
+							setAttr ($bits + ".translateY") 0;
+							setAttr ($bits + ".translateZ") 0;
+						}
+					select -cl;				
+				}
+			else
+				{
+					spaceLocator -n loc_BOX01;
+					group -em -name grp_BOX01;	
+					string $boxCrv = `curve -d 1 -p -0.5 0.5 0.5 -p -0.5 0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 0.5 0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 -0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 -0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 -0.5 0.5 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16` ;
+					select $boxCrv;
+					CenterPivot;
+					parent $boxCrv grp_BOX01;
+					parent grp_BOX01 loc_BOX01;
+					string $rnmBC = `rename $boxCrv ctrl_BOX01`;		
+					select -cl;
+				}
+			}
+	
+	for ($sel in $selection)
+		{
+		
+			string $nameParts[];
+			string $newName=0;
+			string $objectName = $sel ;  
+			string $buffer[] ;  
+
+			tokenize $objectName ":" $buffer ;  
+			  
+			string $objectWithoutNamespace = $buffer[size($buffer)-1] ;  
+
+			//counts number of parts in name using : as the seperator
+			int $numTokens = `tokenize $objectWithoutNamespace "_" $nameParts`;
+			
+			if (`gmatch $nameParts[0] "*jnt*"` == 1 ||`gmatch $nameParts[0] "*ctrl*"` == 1 ||`gmatch $nameParts[0] "*grp*"` == 1 ||`gmatch $nameParts[0] "*loc*"` == 1)
+			{			
+				string $newParts[];
+				//string $select[] = `ls -sl`;	//just an easy way for me to get an array
+				int $removeIndex = 0; //this is the index you want removed
+				$newParts = stringArrayRemove ({$nameParts[$removeIndex]},$nameParts);
+
+				for ($parts in $newParts)
+					{
+						if ($newName == 0)
+							{
+								$newName = $parts;
+							}
+						else
+							{
+								$newName = ($newName +"_"+ $parts);
+							}
+					}
+
+				if ($newName == 0)
+					{
+						 $newName = $objectName;
+					}
+			}
+			else
+				{
+					$newName = $objectWithoutNamespace; 
+				}
+			group -em -name locationFinder;
+			parentConstraint $sel locationFinder;    
+			float $position[3] = `xform -worldSpace -query -translation locationFinder`;
+			float $orientation[3] = `xform -worldSpace -query -rotation locationFinder`; 
+
+			string $locCTRL = ("loc_" + $newName);
+			string $grpCTRL = ("grp_" + $newName);
+			string $ctrlCTRL = ("ctrl_" + $newName);
+
+			spaceLocator -n $locCTRL;
+			group -em -name $grpCTRL;
+
+			string $boxCrv = `curve -d 1 -p -0.5 0.5 0.5 -p -0.5 0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 0.5 0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 -0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 -0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 -0.5 0.5 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16` ;
+			select $boxCrv;
+			CenterPivot;
+			string $rnmBC = `rename $boxCrv $ctrlCTRL`;
+
+			parent $ctrlCTRL $grpCTRL;
+			parent $grpCTRL $locCTRL;
+
+			move -rpr $position[0] $position[1] $position[2] $locCTRL;
+			rotate -a -ws $orientation[0] $orientation[1] $orientation[2] $locCTRL;
+
+			delete locationFinder;
+			
+			if( `objExists Xtra_CTRLS` )
+				{
+					parent $locCTRL Xtra_CTRLS;
+				} 
+				else 
+				{
+					group -em -name Xtra_CTRLS;
+					parent $locCTRL Xtra_CTRLS;
+				}
+			
+			hide ($locCTRL + "Shape");
+
+			//initiate global variable within procedure
+			global string $allControllers[];
+			//add object to array
+			$allControllers[size($allControllers)] = $ctrlCTRL;
+			// select all handles stored in global variable
+			select $allControllers;
+
+			print "You have Box controllers!";
+		}
+}

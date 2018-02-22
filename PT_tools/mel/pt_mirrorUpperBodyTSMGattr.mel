@@ -1,0 +1,88 @@
+global proc pt_mirrorUpperBodyTSMGattr(string $nameSpace)
+{
+	float $minTime = `playbackOptions -q -minTime`; 
+	float $maxTime = `playbackOptions -q -maxTime`;
+	
+	string $ctrl = ($nameSpace + "TSMG_upper_body");
+	string $ctrlAttr[] = pt_getAttributeList($ctrl);
+	//ensure all attributes on upperbody are keyed on first and last frame (if key out of range of timeline the mirrored attributes will blend to unmirrored
+	currentTime $minTime;
+	setKeyframe $ctrl;
+	currentTime $maxTime;
+	setKeyframe $ctrl;
+	
+	if(`objExists null_pt_Upper`)
+	{
+		delete null_pt_Upper;
+	}
+
+	string $grpUpper = `group -em`;
+	$grpUpper = `rename $grpUpper null_pt_Upper`;
+	int $increaseVar = 1;
+	for ($attr in $ctrlAttr)
+	{    
+		$increaseVar = $increaseVar+1;		
+		select -r $grpUpper;
+		addAttr -ln $attr  -at double $grpUpper;
+		setAttr -e-keyable true ($grpUpper+"."+$attr);
+	}
+
+	copyKey -time ($minTime+":"+$maxTime) $ctrl;
+	pasteKey -time 0 $grpUpper;	
+	
+//	string $attributesOfInterest[] = {"controlSize", "FKIKSwitch", "RotationIsolationSwitch"}; //control size attr was causing problems on legs
+	string $attributesOfInterest[] = {"FKIKSwitch", "RotationIsolationSwitch"};	
+	string $armAttr[];
+	string $legAttr[];
+	string $rightLegAttr[];
+	string $leftLegAttr[];
+	string $rightArmAttr[];
+	string $leftArmAttr[];
+	string $rightLegAttrGrp[];
+	string $leftLegAttrGrp[];
+	string $rightArmAttrGrp[];
+	string $leftArmAttrGrp[];
+	
+	string $pt_left = "left";
+	string $pt_right = "right";
+	string $pt_leg = "Leg1_";
+	string $pt_arm = "Arm1_";
+	
+	//create arrays for attribute names these are two work on both controller and null group
+	for ($attr in $attributesOfInterest)
+	{
+		string $attr_ONleg = ($pt_leg + $attr);
+		string $attr_ONarm = ($pt_arm + $attr); 	   
+		stringArrayInsertAtIndex(size($legAttr), $legAttr, $attr_ONleg); 
+		stringArrayInsertAtIndex(size($armAttr), $armAttr, $attr_ONarm);  
+	}
+	for ($attr in $legAttr)
+	{
+		string $attr_ONleft = ($pt_left + $attr);
+		string $attr_ONright = ($pt_right + $attr);    
+		stringArrayInsertAtIndex(size($leftLegAttr), $leftLegAttr, $attr_ONleft); 
+		stringArrayInsertAtIndex(size($rightLegAttr), $rightLegAttr, $attr_ONright);  
+	}
+	for ($attr in $armAttr)
+	{
+		string $attr_ONleft = ($pt_left + $attr);
+		string $attr_ONright = ($pt_right + $attr);    
+		stringArrayInsertAtIndex(size($leftArmAttr), $leftArmAttr, $attr_ONleft); 
+		stringArrayInsertAtIndex(size($rightArmAttr), $rightArmAttr, $attr_ONright);  
+	}
+	
+	//copy animation from null back on to ctrl with switching left and right
+	for ($i = 0 ; $i<size($leftLegAttr) ; ++$i)
+	{
+		copyKey -time ($minTime+":"+$maxTime) -attribute $leftLegAttr[$i] $grpUpper;
+		pasteKey -time 0  -attribute $rightLegAttr[$i] $ctrl;
+		
+		copyKey -time ($minTime+":"+$maxTime) -attribute $rightLegAttr[$i] $grpUpper;
+		pasteKey -time 0  -attribute $leftLegAttr[$i] $ctrl;
+		
+		copyKey -time ($minTime+":"+$maxTime) -attribute $leftArmAttr[$i] $grpUpper;
+		pasteKey -time 0  -attribute $rightArmAttr[$i] $ctrl;
+		copyKey -time ($minTime+":"+$maxTime) -attribute $rightArmAttr[$i] $grpUpper;
+		pasteKey -time 0  -attribute $leftArmAttr[$i] $ctrl;		
+	}
+}

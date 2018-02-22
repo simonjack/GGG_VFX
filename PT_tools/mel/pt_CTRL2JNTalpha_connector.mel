@@ -1,0 +1,31 @@
+global proc pt_CTRL2JNTalpha_connector()
+{
+	string $selection[]= `ls -sl`;
+	for ($sel in $selection)
+	{
+		string $ctrlName;
+		string $jntName;
+		string $nameSegs[] = pt_prefixFinder($sel, "_");
+		string $prefix = $nameSegs[0];
+		string $bodyPart = $nameSegs[1];
+		if ($prefix == "jnt")
+		{
+			$jntName = $sel;
+			$ctrlName = ("ctrl_"+$bodyPart);
+		}else if ($prefix == "ctrl")
+		{
+			$jntName = ("jnt_"+$bodyPart);
+			$ctrlName = $sel;
+		}
+		if (`objExists $jntName` && `objExists $ctrlName`)
+		{
+			connectAttr -f ($ctrlName+".Alpha") ($jntName+".Alpha");
+		}else
+		{
+			print ("uh oh something went wrong.\n"+
+			"joint name = " + $jntName + "\n"+
+			"ctrl name = " + $ctrlName + "\n");
+		}
+	}
+}
+

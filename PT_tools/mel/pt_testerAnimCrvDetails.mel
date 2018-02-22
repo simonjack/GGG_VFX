@@ -1,0 +1,13 @@
+global proc pt_testerAnimCrvDetails()
+{
+	string $animCurves[]= `ls -typ "animCurveTL" -typ "animCurveTU" -typ "animCurveTA" -typ "animCurveTT"`;
+	for ($crv in $animCurves)
+	{
+		string $allConnections[] = `listConnections -s false -d true -c true -sh true -p true $crv`;
+		for ($connect in $allConnections)
+		{
+			print ($connect + "\n");
+		}
+	}
+}
+

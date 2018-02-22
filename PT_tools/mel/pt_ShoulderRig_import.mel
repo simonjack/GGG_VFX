@@ -1,0 +1,11 @@
+global proc pt_ShoulderRig_import()
+{
+	if (`objExists SK_R_UpperArmRoll0`)
+	{
+		error "Can only import generic shoulder rig once";
+	}else
+	{
+		file -import -type "mayaBinary" -mergeNamespacesOnClash false -rpr "shoulderRig" -options "v=0;"  -pr -loadReferenceDepth "all" "C:/Grinding Gear/Art/shoulderRig.mb";
+		print ("\nShoulder Rig Imported. \n");
+	}
+}

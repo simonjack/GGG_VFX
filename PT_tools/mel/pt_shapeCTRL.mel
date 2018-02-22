@@ -1,0 +1,78 @@
+proc pt_arrowSHAPE(string $ctrlCTRL)
+{
+	string $crv1 = `curve -d 1 -p -1 0 1 -p -1 0 -2 -p 1 0 -2 -p 1 0 1 -p 2 0 1 -p 0 0 3 -p -2 0 1 -p -1 0 1 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 ` ;			
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlCTRL`;
+}
+proc pt_boxSHAPE(string $ctrlCTRL)
+{
+	string $crv1 = `curve -d 1 -p -0.5 0.5 0.5 -p -0.5 0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 0.5 0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 -0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 -0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 -0.5 0.5 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16` ;					
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlCTRL`;
+}
+proc pt_circleSHAPE(string $ctrlCTRL)
+{
+	string $cv1[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	select $crv1[0];
+	CenterPivot;
+	string $rnmCrv = `rename $crv1[0] $ctrlCTRL`;
+}
+proc pt_crossSHAPE(string $ctrlCTRL)
+{
+	string $crv1 = `curve -d 1 -p -1 0 1 -p -3 0 1 -p -3 0 2 -p -5 0 0 -p -3 0 -2 -p -3 0 -1 -p -1 0 -1 -p -1 0 -3 -p -2 0 -3 -p 0 0 -5 -p 2 0 -3 -p 1 0 -3 -p 1 0 -1 -p 3 0 -1 -p 3 0 -2 -p 5 0 0 -p 3 0 2 -p 3 0 1 -p 1 0 1 -p 1 0 3 -p 2 0 3 -p 0 0 5 -p -2 0 3 -p -1 0 3 -p -1 0 1 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16 -k 17 -k 18 -k 19 -k 20 -k 21 -k 22 -k 23 -k 24` ;
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlCTRL`;
+}
+proc pt_diamondSHAPE(string $ctrlCTRL)
+{
+	string $crv1 = `curve -d 1 -p 0.0 1 0 -p 0.0 0 1 -p 0.0 -1 0 -p 0.0 0 -1 -p 0.0 1 0 -p 1.0 0 0 -p 0.0 -1 0 -p -1.0 0 0 -p 0.0 1 0 -p 1.0 0 0 -p 0.0 0 1 -p -1.0 0 0 -p 0.0 0 -1 -p 1.0 0 0 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13` ;
+	select $crv1;
+	CenterPivot;
+	string $rnmCrv = `rename $crv1 $ctrlCTRL`;
+}
+proc pt_rotateSHAPE(string $ctrlCTRL)
+{
+	string $crv1[]= `circle -nr 0 1 0 -c 0 0 0 -sw 180 -r 2`;
+	string $crv2[]= `circle -nr 0 1 0 -c 0 0 0 -sw 180 -r 4`;
+	string $arrow01= `curve -d 1 -p 0 0 -2 -p 0 0 -1 -p 2 0 -3 -p 0 0 -5 -p 0 0 -4 -k 0 -k 1 -k 2 -k 3 -k 4` ;
+	string $arrow02= `curve -d 1 -p 0 0 2 -p 0 0 1 -p 2 0 3 -p 0 0 5 -p 0 0 4 -k 0 -k 1 -k 2 -k 3 -k 4` ;
+
+	string $relCrv1[] = `listRelatives -shapes $crv1[0]`;
+	string $relCrv2[] = `listRelatives -shapes $crv2[0]`;
+	string $relArrow1[] = `listRelatives -shapes $arrow01`;
+	string $relArrow2[] = `listRelatives -shapes $arrow02`;
+
+	parent -r -shape $relCrv2[0] $crv1[0];
+	parent -r -shape $relArrow1[0] $crv1[0];
+	parent -r -shape $relArrow2[0] $crv1[0];
+
+	delete $crv2[0] $arrow01 $arrow02;
+	string $rnmCrv = `rename $crv1[0] $ctrlCTRL`;
+}
+proc pt_sphericalSHAPE(string $ctrlCTRL)
+{
+	//Create curves
+	string $cv1[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	string $cv2[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	string $cv3[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+	//Rotate curves to look like a joint
+	rotate -r -os 90 0 0 $cv2[0];
+	rotate -r -os 0 0 90 $cv3[0];
+	//Freeze the rotated curves
+	select $cv2[0]; select -add $cv3[0];
+	makeIdentity -apply 1 -t 1 -r 1 -s 1 ;
+	//Parent shapes of curves 2 and 3 to curve 1
+	string $relCrv2[] = `listRelatives -shapes $cv2[0]`;
+	string $relCrv3[] = `listRelatives -shapes $cv3[0]`;
+	parent -r -shape $relCrv2[0] $cv1[0];
+	parent -r -shape $relCrv3[0] $cv1[0];
+	//Delete the trns node of curves 2 and 3
+	select $cv2[0]; select -add $cv3[0]; doDelete;
+	//Rename the joint curve
+	string $rnmCrv = `rename $cv1[0] $ctrlCTRL`;
+	//Delete history on joint curve
+	select $rnmCrv; DeleteHistory;
+}

@@ -1,0 +1,48 @@
+global proc pt_copyLnRAnims (string $rightCTRL, string $leftCTRL)
+{
+	if(`objExists null_pt_Left`)
+	{
+		delete null_pt_Left;
+	}
+	if(`objExists null_pt_Right`)
+	{
+		delete null_pt_Right;
+	}
+
+	string $leftAttributeList[] = pt_getAttributeList($leftCTRL);
+	string $rightAttributeList[] = pt_getAttributeList($rightCTRL);    
+	  
+	string $grpLeft = `group -em`;
+	string $grpRight = `group -em`;
+
+	int $increaseVar = 1;
+	for ($lattr in $leftAttributeList)
+	{    
+		select -r $grpLeft;
+		addAttr -ln $lattr  -at double $grpLeft;
+		setAttr -e-keyable true ($grpLeft+"."+$lattr);
+	}
+	$increaseVar = 1;
+	for ($rattr in $rightAttributeList)
+	{        
+		select -r $grpLeft;
+		addAttr -ln $rattr  -at double $grpRight;
+		setAttr -e-keyable true ($grpRight+"."+$rattr);
+	}
+
+	float $minTime = `playbackOptions -q -minTime`; 
+	float $maxTime = `playbackOptions -q -maxTime`;
+
+	cutKey -time ($minTime+":"+$maxTime) $rightCTRL;
+	pasteKey -time 0 $grpRight;
+	cutKey -time ($minTime+":"+$maxTime) $leftCTRL;
+	pasteKey -time 0 $grpLeft;
+
+	copyKey -time ($minTime+":"+$maxTime) $grpRight;
+	pasteKey -time 0 $leftCTRL;
+	copyKey -time ($minTime+":"+$maxTime) $grpLeft;
+	pasteKey -time 0 $rightCTRL;
+
+	string $RNMgrpLeft = `rename $grpLeft null_pt_Left`;
+	string $RNMgrpRight = `rename $grpRight null_pt_Right`;
+}

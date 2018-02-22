@@ -1,0 +1,372 @@
+proc  ctrlBOX () {
+					global string $ctrlIKName;
+					string $boxCrv = `curve -d 1 -p -0.5 0.5 0.5 -p -0.5 0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 0.5 0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 -0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 -0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 -0.5 0.5 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16` ;
+					select $boxCrv;
+					CenterPivot;
+					string $rnmBC = `rename $boxCrv $ctrlIKName`;
+}
+
+proc  ctrlCURVE () {
+						//Joint Curve Tool
+						global string $tsmgDriverName;
+						//Create curves
+						string $cv1[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+						string $cv2[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+						string $cv3[] = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -ch 1`;
+						//Rotate curves to look like a joint
+						rotate -r -os 90 0 0 $cv2[0];
+						rotate -r -os 0 0 90 $cv3[0];
+						//Freeze the rotated curves
+						select $cv2[0]; select -add $cv3[0];
+						makeIdentity -apply 1 -t 1 -r 1 -s 1 ;
+						//Parent shapes of curves 2 and 3 to curve 1
+						string $relCrv2[] = `listRelatives -shapes $cv2[0]`;
+						string $relCrv3[] = `listRelatives -shapes $cv3[0]`;
+						parent -r -shape $relCrv2[0] $cv1[0];
+						parent -r -shape $relCrv3[0] $cv1[0];
+						//Delete the trns node of curves 2 and 3
+						select $cv2[0]; select -add $cv3[0]; doDelete;
+						//Rename the joint curve
+						string $rnmCrv = `rename $cv1[0] $tsmgDriverName`;
+						//Delete history on joint curve
+						select $rnmCrv; DeleteHistory;
+}
+global proc pt_TSMG_pivotCTRL(){
+	global string $ctrlIKName;
+	global string $tsmgDriverName;
+	global int $whatLimb = 0; // 0 not set 1 leg, 2 arm, 3 spine
+	string $myTool = `currentCtx`;
+	int $winner = 0;	
+	
+	string $selection[] = `ls -sl`;
+	string $controlName = $selection[0];
+	string $parts[];
+	string $bodyPart;
+
+	
+	//splitting selected object up into two parts, the namespace(s) and controller name
+	string $nameSegments[];
+	$nameSegments = pt_nameSpace_Controller();
+	string $references = $nameSegments[0];
+	string $controllerName = $nameSegments[1];
+
+	int $numTokens = `tokenize $controllerName "_" $parts`;
+
+	if( $numTokens == 0 )
+	{
+		   print( "The object selected is not compatible, with this script" );
+	}
+	
+	$bodyPart = $parts[0];
+
+	//test what body part it is
+
+	if (`gmatch $bodyPart "*leg*"` == 1 || `gmatch $bodyPart "*Leg*"` == 1){
+			if (`gmatch $bodyPart "*left*"` == 1 || `gmatch $bodyPart "*Left*"` == 1){
+				$whatLimb = 1;
+				} else
+				if (`gmatch $bodyPart "*right*"` == 1 || `gmatch $bodyPart "*Right*"` == 1){		
+					$whatLimb = 1;
+					} else {
+					$whatLimb = 1;
+					};
+	};
+
+	if (`gmatch $bodyPart "*arm*"` == 1 || `gmatch $bodyPart "*Arm*"` == 1){
+			if (`gmatch $bodyPart "*left*"` == 1 || `gmatch $bodyPart "*Left*"` == 1){
+				$whatLimb = 2;
+				} else
+				if (`gmatch $bodyPart "*right*"` == 1 || `gmatch $bodyPart "*Right*"` == 1){		
+					$whatLimb = 2;
+					} else {
+					$whatLimb = 2;
+					};
+	};
+					
+	if (`gmatch $bodyPart "*spine*"` == 1 || `gmatch $bodyPart "*Spine*"` == 1){
+		$whatLimb = 3;
+		};
+				
+	//test whether selection order is correct
+	string $truncateParts = `substring $parts[1] 1 5`;
+
+	if (`gmatch $truncateParts "*loRes*"` == 1 || `gmatch $truncateParts "*LoRes*"` == 1){
+		$winner = 1;
+		};
+			
+	if ( $winner == 0){
+			print "Select joint then IK, spine IK or upperbody controller, then I'll make your wildest dreams come true";
+			} else {
+			
+			float $ctrlLegScale = `getAttr ($references + "TSMG_upper_body.leftLeg1_ControlSize")`;
+			float $ctrlArmScale = `getAttr ($references + "TSMG_upper_body.rightArm1_controlSize")`;
+			float $ctrlSpineScale = `getAttr ($references + "TSMG_upper_body.spine1_ControlSize")`;
+			float $pvtArmScale = $ctrlArmScale*0.9;
+			float $pvtSpineScale = $ctrlSpineScale*0.9;
+
+			string $ctrlPivotName = ($parts[ 0 ] + "_ctrlPivot");
+			string $grpPivotName = ($parts[ 0 ] + "_grpPivot");
+			string $locPivotName = ($parts[ 0 ] + "_locPivotPoint");
+			string $grpToesName = ($parts[ 0 ] + "_grpToes");
+			string $ctrlToesName = ($parts[ 0 ] + "_ctrlToes");
+			string $locToesName = ($parts[ 0 ] + "_locToes");
+			string $grpLocPivotName = ($parts[ 0 ] + "_grpLocPivotPoint");
+			string $grpCtrlIKName = ($parts[ 0 ] + "_grpIK");
+			string $tsmgUpperBody[] = `ls -r 1 "TSMG_upper_body"`;
+			string $tsmgFKIKSwitch = ($parts[ 0 ] + "_FKIKSwitch");
+			$tsmgDriverName = ($parts[ 0 ] + "_drvTSMG");
+			$ctrlIKName = ($parts[ 0 ] + "_ctrlIK");
+			
+			print ("Driver name = " + $tsmgDriverName + " IK name = " + $ctrlIKName);
+			ctrlBOX ();
+
+			select -r $selection[0] ;
+			select -tgl $ctrlIKName ;
+			doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+			pointConstraint -offset 0 0 0 -weight 1;
+
+			select -r $selection[1] ;
+			select -tgl $ctrlIKName ;
+			doCreateOrientConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+			orientConstraint -offset 0 0 0 -weight 1;
+
+			select -r ($ctrlIKName + "_pointConstraint1") ;
+			select -tgl ($ctrlIKName + "_orientConstraint1") ;
+			doDelete;
+
+			select -r $ctrlIKName ;
+			duplicate -rr -n $ctrlPivotName;
+
+			select -r $selection[1] ;
+			select -add $ctrlPivotName ;
+			pt_align();
+
+			spaceLocator -p 0 0 0 -n $locPivotName;
+
+			ctrlCURVE();
+
+			setAttr ($tsmgDriverName + ".translateY") 0;
+			setAttr ($tsmgDriverName + ".translateX") 0;
+
+			select -r $ctrlPivotName ;
+			select -add $locPivotName ;
+			pt_align();
+
+			setAttr ($locPivotName + "Shape.localScaleX") 5;
+			setAttr ($locPivotName + "Shape.localScaleY") 5;
+			setAttr ($locPivotName + "Shape.localScaleZ") 5;
+			setAttr ($tsmgDriverName + "Shape2.overrideEnabled") 1;
+			setAttr ($tsmgDriverName + "Shape2.overrideDisplayType") 1;
+			setAttr ($tsmgDriverName + "Shape1.overrideEnabled") 1;
+			setAttr ($tsmgDriverName + "Shape1.overrideDisplayType") 1;
+			setAttr ($tsmgDriverName + "Shape.overrideEnabled") 1;
+			setAttr ($tsmgDriverName + "Shape.overrideDisplayType") 1;
+
+			//Make pivot point channel available
+			setAttr -k on ($ctrlPivotName + ".rotatePivotX");
+			setAttr -k on ($ctrlPivotName + ".rotatePivotY");
+			setAttr -k on ($ctrlPivotName + ".rotatePivotZ");
+
+			//Freeze Transforms of FootCTRL
+			group -em -n $grpCtrlIKName; xform -os -piv 0 0 0;
+			select -r $ctrlIKName;
+			select -add $grpCtrlIKName ;
+			pt_align();
+
+			parent $ctrlIKName $grpCtrlIKName ;
+			//select -r $ctrlIKName ;
+			//makeIdentity -apply true -t 1 -r 1 -s 0 -n 0;
+
+
+			//Create empty group called $grpPivotName
+			group -em -n $grpPivotName; xform -os -piv 0 0 0;
+
+			select -r $ctrlPivotName ;
+			select -add $grpPivotName ;
+			pt_align();
+
+			parent $grpPivotName $ctrlIKName ;
+			parent $ctrlPivotName $grpPivotName ;
+			parent $tsmgDriverName $ctrlPivotName ;
+
+			setAttr ($tsmgDriverName + ".translateX") 0;
+			setAttr ($tsmgDriverName + ".translateY") 0;
+			setAttr ($tsmgDriverName + ".translateZ") 0;
+			setAttr ($tsmgDriverName + ".rotateX") 0;
+			setAttr ($tsmgDriverName + ".rotateY") 0;
+			setAttr ($tsmgDriverName + ".rotateZ") 0;
+
+			group -em -n $grpLocPivotName; xform -os -piv 0 0 0;
+
+			select -r $locPivotName ;
+			select -add $grpLocPivotName ;
+			pt_align();
+			
+			parent $locPivotName $grpLocPivotName ;
+					
+			parent $grpLocPivotName $ctrlIKName ;
+			
+
+			select -r $locPivotName ;
+			makeIdentity -apply true -t 1 -r 1 -s 0 -n 0;
+
+			//Wire locator's translate to Pivot controls pivot position.
+			connectAttr -f ($locPivotName + ".translateX") ($ctrlPivotName + ".rotatePivotX");
+			connectAttr -f ($locPivotName + ".translateY") ($ctrlPivotName + ".rotatePivotY");
+			connectAttr -f ($locPivotName + ".translateZ") ($ctrlPivotName + ".rotatePivotZ");
+
+			//Connect rig to Pivot controls
+			select -r $tsmgDriverName ;
+			select -tgl $selection[1] ;
+			parentConstraint -mo -weight 1;
+
+			setAttr -lock true -keyable false -channelBox false ($ctrlPivotName + ".tx");
+			setAttr -lock true -keyable false -channelBox false ($ctrlPivotName + ".ty");
+			setAttr -lock true -keyable false -channelBox false ($ctrlPivotName + ".tz");
+			setAttr -lock true -keyable false -channelBox false ($ctrlPivotName + ".scaleX");
+			setAttr -lock true -keyable false -channelBox false ($ctrlPivotName + ".scaleY");
+			setAttr -lock true -keyable false -channelBox false ($ctrlPivotName + ".scaleZ");
+			setAttr -lock true -keyable false -channelBox false ($ctrlIKName + ".scaleX");
+			setAttr -lock true -keyable false -channelBox false ($ctrlIKName + ".scaleY");
+			setAttr -lock true -keyable false -channelBox false ($ctrlIKName + ".scaleZ");
+			setAttr -lock true -keyable false -channelBox false ($locPivotName + ".scaleX");
+			setAttr -lock true -keyable false -channelBox false ($locPivotName + ".scaleY");
+			setAttr -lock true -keyable false -channelBox false ($locPivotName + ".scaleZ");
+				
+			//set controller colours
+			setAttr ($locPivotName + "Shape.overrideEnabled") 1;
+			setAttr ($locPivotName + "Shape.overrideColor") 16;
+
+			setAttr ($ctrlPivotName + "Shape.overrideEnabled") 1;
+			setAttr ($ctrlPivotName + "Shape.overrideColor") 14;
+
+			setAttr ($ctrlIKName + "Shape.overrideEnabled") 1;
+			setAttr ($ctrlIKName + "Shape.overrideColor") 13;
+
+
+				if ( $whatLimb == 0 ){
+				print "not a body part...go think more carefully about your life";
+				}else
+				if ( $whatLimb == 2 ){
+					select -r ($ctrlIKName + "Shape.cv[0:16]") ;
+					scale -r -xyz $ctrlArmScale $ctrlArmScale $ctrlArmScale;
+					select -r ($ctrlPivotName + "Shape.cv[0:16]") ;
+					scale -r -xyz $pvtArmScale $pvtArmScale $pvtArmScale;
+					
+					addAttr -ln "AutoStretch"  -at double  -min 0 -max 1 -dv 1 $ctrlIKName;
+					setAttr -e-keyable true ($ctrlIKName + ".AutoStretch");
+					addAttr -ln "AntiIKPop"  -at double  -min 0 -max 1 -dv 0 $ctrlIKName;
+					setAttr -e-keyable true ($ctrlIKName + ".AntiIKPop");
+					addAttr -ln "LowerArmStretch"  -at double  -min 0 -dv 1 $ctrlIKName;
+					setAttr -e-keyable true ($ctrlIKName + ".LowerArmStretch");
+					addAttr -ln "UpperArmStretch"  -at double  -min 0 -dv 1 $ctrlIKName;
+					setAttr -e-keyable true ($ctrlIKName + ".UpperArmStretch");
+					
+					connectAttr -f ($ctrlIKName + ".AutoStretch") ($selection[1] + ".AutoStretch");
+					connectAttr -f ($ctrlIKName + ".AntiIKPop") ($selection[1] + ".AntiIKPop");
+					connectAttr -f ($ctrlIKName + ".LowerArmStretch") ($selection[1] + ".LowerArmStretch");
+					connectAttr -f ($ctrlIKName + ".UpperArmStretch") ($selection[1] + ".UpperArmStretch");
+				
+					
+					
+					addAttr -ln "TSMG_CTRL_VIS" -nn "TSMG CTRL VIS" -at double  -min 0 -max 1 -dv 0 $ctrlIKName;
+					setAttr -e-keyable true ($ctrlIKName + ".TSMG_CTRL_VIS");
+					addAttr -ln "PIVOT_CTRL_VIS" -nn "PIVOT CTRL VIS" -at double  -min 0 -max 1 -dv 1 $ctrlIKName;
+					setAttr -e-keyable true ($ctrlIKName + ".PIVOT_CTRL_VIS");
+					
+					connectAttr -f ($ctrlIKName + ".PIVOT_CTRL_VIS") ($grpPivotName + ".visibility");
+					connectAttr -f ($ctrlIKName + ".TSMG_CTRL_VIS") ($selection[1] + "Shape.visibility");
+					connectAttr -f ($ctrlIKName + ".PIVOT_CTRL_VIS") ($grpLocPivotName + ".visibility");
+							
+					select -cl  ;
+					//restore tool
+					setToolTo $myTool;
+					connectAttr -f ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch) ($ctrlIKName + ".visibility");
+					}else 
+					if ( $whatLimb == 3 ){
+						select -r ($ctrlIKName + "Shape.cv[0:16]") ;
+						scale -r -xyz $ctrlSpineScale $ctrlSpineScale $ctrlSpineScale;
+						select -r ($ctrlPivotName + "Shape.cv[0:16]") ;
+						scale -r -xyz $pvtSpineScale $pvtSpineScale $pvtSpineScale;
+						select -cl  ;
+						//restore tool
+						setToolTo $myTool;
+						connectAttr -f ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch) ($ctrlIKName + ".visibility");
+						}else
+						if ( $whatLimb == 1 ) {
+							CreateNURBSCircle;
+							circle -ch off -o on -nr 0 1 0 -r 0.8 -n $ctrlToesName;
+							
+							group -n $grpToesName; xform -os -piv 0 0 0;
+							
+							setAttr ($grpToesName + ".rotateX") 270;
+							setAttr ($grpToesName + ".rotateY") 180;
+							
+							
+							spaceLocator -p 0 0 0 -n $locToesName;
+							
+							parent $grpToesName $locToesName ;
+							
+							select -r ($references + $parts[ 0 ] + "_IKHeelControl") ;
+							select -add $locToesName ;
+							pt_align();
+							
+							parent $locToesName $ctrlIKName ;
+							
+							select -r $tsmgDriverName ;
+							select -add $locToesName ;
+							parentConstraint -mo -weight 1;
+							connectAttr -f ($ctrlToesName + ".rotateX") ($selection[1] + ".ToeRaise");
+							connectAttr -f ($ctrlToesName + ".rotateZ") ($selection[1] + ".ToeSwivel");
+							
+							
+							addAttr -ln "AutoStretch"  -at double  -min 0 -max 1 -dv 1 $ctrlIKName;
+							setAttr -e-keyable true ($ctrlIKName + ".AutoStretch");
+							addAttr -ln "AntiIKPop"  -at double  -min 0 -max 1 -dv 0 $ctrlIKName;
+							setAttr -e-keyable true ($ctrlIKName + ".AntiIKPop");
+							addAttr -ln "FootStretch"  -at double  -min 0 -dv 1 $ctrlIKName;
+							setAttr -e-keyable true ($ctrlIKName + ".FootStretch");
+							addAttr -ln "LowerLegStretch"  -at double  -min 0 -dv 1 $ctrlIKName;
+							setAttr -e-keyable true ($ctrlIKName + ".LowerLegStretch");
+							addAttr -ln "UpperLegStretch"  -at double  -min 0 -dv 1 $ctrlIKName;
+							setAttr -e-keyable true ($ctrlIKName + ".UpperLegStretch");
+							
+							connectAttr -f ($ctrlIKName + ".AutoStretch") ($selection[1] + ".AutoStretch");
+							connectAttr -f ($ctrlIKName + ".AntiIKPop") ($selection[1] + ".AntiIKPop");
+							connectAttr -f ($ctrlIKName + ".FootStretch") ($selection[1] + ".FootStretch");
+							connectAttr -f ($ctrlIKName + ".LowerLegStretch") ($selection[1] + ".LowerLegStretch");
+							connectAttr -f ($ctrlIKName + ".UpperLegStretch") ($selection[1] + ".UpperLegStretch");
+							
+							
+							
+							addAttr -ln "TSMG_CTRL_VIS" -nn "TSMG CTRL VIS" -at double  -min 0 -max 1 -dv 0 $ctrlIKName;
+							setAttr -e-keyable true ($ctrlIKName + ".TSMG_CTRL_VIS");
+							addAttr -ln "PIVOT_CTRL_VIS" -nn "PIVOT CTRL VIS" -at double  -min 0 -max 1 -dv 1 $ctrlIKName;
+							setAttr -e-keyable true ($ctrlIKName + ".PIVOT_CTRL_VIS");
+							connectAttr -f ($ctrlIKName + ".PIVOT_CTRL_VIS") ($grpPivotName + ".visibility");
+							connectAttr -f ($ctrlIKName + ".TSMG_CTRL_VIS") ($selection[1] + "Shape.visibility");
+							connectAttr -f ($ctrlIKName + ".PIVOT_CTRL_VIS") ($grpLocPivotName + ".visibility");
+							
+							
+							setAttr -lock true -keyable false -channelBox false ($ctrlToesName + ".ry");
+							setAttr -lock true -keyable false -channelBox false ($ctrlToesName + ".tx");
+							setAttr -lock true -keyable false -channelBox false ($ctrlToesName + ".ty");
+							setAttr -lock true -keyable false -channelBox false ($ctrlToesName + ".tz");
+							
+							setAttr ($ctrlToesName + "Shape.overrideEnabled") 1;
+							setAttr ($ctrlToesName + "Shape.overrideColor") 14;      
+					   
+							select -r ($ctrlIKName + "Shape.cv[0:16]") ;
+							select -add ($ctrlPivotName + "Shape.cv[0:16]") ;
+							select -add ($ctrlToesName + ".cv[0:7]") ;
+							scale -r -xyz $ctrlLegScale $ctrlLegScale $ctrlLegScale;
+							select ($locToesName + "Shape");
+							hide;
+							select -cl  ;
+							//restore tool
+							setToolTo $myTool;
+							
+							connectAttr -f ($tsmgUpperBody[0] + "." + $tsmgFKIKSwitch) ($ctrlIKName + ".visibility");
+							};
+	};
+};
