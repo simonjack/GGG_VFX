@@ -347,7 +347,7 @@ def createSphereCtrlSetup():  # create Arrow Control
 def UI():
     path = expanduser("~") + '\\maya\\scripts\\icons'
 
-    window = mc.window(name='controlCreator')
+    window = mc.window()
     mc.rowColumnLayout(numberOfRows=1)
     mc.iconTextButton(style='iconAndTextVertical', image1=path + '\\arrow.jpg', label='Arrow', c=createArrowCtrlSetup)
     mc.iconTextButton(style='iconAndTextVertical', image1=path + '\\box.jpg', label='Box', c=createBoxCtrlSetup)
