@@ -1,0 +1,32 @@
+{
+    "build_systems":
+    [
+        {
+            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+            "name": "Anaconda Python Builder",
+            "selector": "source.python",
+            "shell_cmd": "\"python\" -u \"$file\""
+        }
+    ],
+    "folders":
+    [
+        {
+            "path": "C:/Users/Jackson/git_local/personal"
+        }
+    ],
+
+    // ...
+
+    "settings": {
+        "python_interpreter_path": "C:/Python27",
+
+        "python_package_paths": [
+            // My virtualenv python project location
+            "C:/Python27/Lib/site-packages",
+
+            // Maya's python stubs
+            "C:/Program Files/Autodesk/Maya2018/devkit/other/pymel/extras/completion/py"
+            ]
+    }
+
+}

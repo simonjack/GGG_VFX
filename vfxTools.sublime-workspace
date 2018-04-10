@@ -1,0 +1,1038 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ski",
+				"skinnedToarmour"
+			],
+			[
+				"sk_",
+				"sk_createNewFile"
+			],
+			[
+				"sk",
+				"sk_loadJts"
+			],
+			[
+				"selc",
+				"selection"
+			],
+			[
+				"open",
+				"openPorts"
+			],
+			[
+				"initi",
+				"initiateMasterUI"
+			],
+			[
+				"dele",
+				"deleteAnimCurves"
+			],
+			[
+				"skinned",
+				"skinnedToarmour"
+			],
+			[
+				"de",
+				"deleteAnimCurves"
+			],
+			[
+				"save",
+				"saveFileasRig"
+			],
+			[
+				"i",
+				"i"
+			],
+			[
+				"ope",
+				"openImgDir"
+			],
+			[
+				"shader",
+				"shader"
+			],
+			[
+				"sel",
+				"sel"
+			],
+			[
+				"py",
+				"py"
+			],
+			[
+				"pat",
+				"pathToClean"
+			],
+			[
+				"X",
+				"X"
+			],
+			[
+				"execu",
+				"execu2"
+			],
+			[
+				"expor",
+				"exportGGG"
+			],
+			[
+				"filePath",
+				"filePath"
+			],
+			[
+				"n",
+				"n"
+			],
+			[
+				"Cross",
+				"Cross"
+			],
+			[
+				"anim",
+				"animationList"
+			],
+			[
+				"file",
+				"filePath"
+			],
+			[
+				"Basic",
+				"BasicDialog"
+			],
+			[
+				"a",
+				"alttiles"
+			],
+			[
+				"fixed",
+				"fixedGrp"
+			],
+			[
+				"tile",
+				"tileGrp"
+			],
+			[
+				"multi",
+				"multiTile"
+			],
+			[
+				"armou",
+				"armourGrp"
+			],
+			[
+				"skinn",
+				"skinnedGrp"
+			],
+			[
+				"arm",
+				"armourGrp"
+			],
+			[
+				"s",
+				"source_files"
+			],
+			[
+				"subdi",
+				"subdir_newPath"
+			],
+			[
+				"scrip",
+				"scriptPath"
+			],
+			[
+				"aro",
+				"armourGrp"
+			],
+			[
+				"files",
+				"files"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/C/Users/Jackson/Documents/skinnedArmour.py",
+			"settings":
+			{
+				"buffer_size": 3206,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/SVNs/Bin/Client/Metadata/Monsters/BloodElemental/BloodElemental.aoc",
+			"settings":
+			{
+				"buffer_size": 5257,
+				"encoding": "UTF-16 LE with BOM",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/Python/Python.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "set",
+		"selected_items":
+		[
+			[
+				"set",
+				"Set Syntax: Python"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			],
+			[
+				"setsyntax python",
+				"Set Syntax: Python"
+			],
+			[
+				"",
+				"A File Icon: Changelog"
+			],
+			[
+				"set syntax OT",
+				"Set Syntax: otc Files"
+			],
+			[
+				"se",
+				"Set Syntax: Python"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"s",
+				"Set Syntax: Python"
+			],
+			[
+				"setsyntax:python",
+				"Set Syntax: Python"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Enable Package"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"set syntax:Python",
+				"Set Syntax: Python"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"setsyntax:Python",
+				"Set Syntax: Python"
+			],
+			[
+				"setSyntax:bat",
+				"Set Syntax: Batch File"
+			],
+			[
+				"setsyntax:java",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"setsyntax:b",
+				"Set Syntax: Batch File"
+			],
+			[
+				"set syntax py",
+				"Set Syntax: Python"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"set syntax:python",
+				"Set Syntax: Python"
+			],
+			[
+				"install Package",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Install Package Control"
+			]
+		],
+		"width": 476.0
+	},
+	"console":
+	{
+		"height": 192.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Jackson/git_local/personal"
+	],
+	"file_history":
+	[
+		"/C/SVNs/Bin/Client/Metadata/Monsters/BloodElemental/BloodElemental.ao",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/Misc/GGGUtilTools/skinnedArmour.py",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/rune_epk/mid.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/rune_epk/impact_cyl_cyl.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/fire_projectile/mid.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/fire_projectile/impact_cyl_cyl.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/fire_projectile/core_Start.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/fire_projectile/core_effect.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/fire_epk/mid.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/mid.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/mid_smokelinger.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/impact_cyl_cyl.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/fire_circle.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/explosionSuck.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/explosion.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/ember_down.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion/boom.pet",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/rune_epk/appear_once.ao",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/rune_epk/appear_once.aoc",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/rune_epk/disappear_once.ao",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/rune_epk/disappear_once.aoc",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/explosion/nemesis_explode.ao",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_epk/rig.ao",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/explosion/nemesis_explode.aoc",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_epk/rig.aoc",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_projectile/projectile_fire.aoc",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_projectile/projectile_fire.ao",
+		"/C/Users/Jackson/git_local/personal/skinnedArmour.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/Misc/GGGUtilTools/skinnedArmourUI.py",
+		"/C/Users/Jackson/git_local/ggg_vfx/vfxTools.sublime-project",
+		"/C/Program Files/Autodesk/Maya2018/devkit/other/pymel/extras/completion/py/maya/decorators.py",
+		"/C/Program Files/Autodesk/Maya2018/devkit/other/pymel/extras/completion/py/maya/OpenMayaUI.py",
+		"/C/Program Files/Autodesk/Maya2018/devkit/other/pymel/extras/completion/py/maya/OpenMaya.py",
+		"/C/Program Files/Autodesk/Maya2018/devkit/README_DEVKIT_MOVED.txt",
+		"/C/tmp/SelectionList.txt",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/effectsToolkit/scripts/connect2Dtex_toAttr.py",
+		"/C/Users/Jackson/Documents/maya/2018/userSetup.py",
+		"/C/Users/Jackson/git_local/personal/pygenerator-master/setup.py",
+		"/C/Users/Jackson/git_local/personal/fire_mod/skinnedArmour.py",
+		"/C/Users/Jackson/Downloads/pygenerator-master/setup.py",
+		"/C/Users/Jackson/git_local/personal/pygenerator-master/pygenerator/project.py",
+		"/C/Users/Jackson/git_local/personal/pygenerator-master/pygenerator/readme_content.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/effectsToolkit/scripts/MasterUI.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/Misc/userSetup.py",
+		"/C/Users/Jackson/Documents/maya/scripts_BAK/effects.py",
+		"/C/Users/Jackson/git_local/personal/skinnedArmour_UI.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/Misc/GGGUtilTools/skinnedArmour_UI.py",
+		"/C/Users/Jackson/AppData/Roaming/Sublime Text 3/Packages/otNicifier/clean_ot.py",
+		"/C/Users/Jackson/git_local/personal/readLinesTester.py",
+		"/C/Users/Jackson/git_local/personal/effects.py",
+		"/C/Users/Jackson/git_local/personal/fire_mod/rigPath.txt",
+		"/C/Users/Jackson/git_local/personal/tester.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/effectsToolkit/scripts/open_Maya_port.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/studiolibrary/main.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/studiolibrary/__init__.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/studiolibrary/database.py",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/studiolibrary/cmds.py",
+		"/C/Users/Jackson/Downloads/studiolibrary/packages/studiolibrarymaya/animitem.py",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/glitter_tiled.mat.texprops",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/glitter_tiled.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/Fire_testc.mat.texprops",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/lavascroll.mat.texprops",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/lavascroll.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/light_gradient.mat.texprops",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/light_gradient.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/muddle_double.mat.texprops",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/muddle_double.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/rune_addc.mat.texprops",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/rune_atc.mat.texprops",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/rune_epk/rune_multic.mat.texprops",
+		"/C/SVNs/Art/Tools/GGGPipe/Maya/Misc/GGGUtilTools/GGG_mayaUtil.py",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_epk/mid.pet",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_epk/charge_up.epk",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_epk/charge.pet",
+		"/C/Users/Jackson/git_local/personal/matFilesProcessing.py",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/ice_shockwave.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/shockwave_ring.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/light_shimmer.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/sharp_test.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/light_gradient.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lava_dots.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/ring_thick.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/fireball_flame3.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/light_grad.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/orb_trail_at.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/light_spine.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/wall_lava_AT.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_main.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_fat_add.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_main_base.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/energy_ftrail_add.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_Gold.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_blue_at.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_at.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_mul.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/ember.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/ring_01.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/texture_of_lava.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lava_ATmask.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lavascroll.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/spark2.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/snow_explosion_at.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/smoke_bit2.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/smoke_bit1.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/smoke_01.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/shockwave.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/rocks_4tile_colour.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lavabot_01.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lava_strong_glow.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lavaGround_mult.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lavaGround_MidGlow.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/lavaGround_Mid.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/largeFireBall.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/frenzytrail_fireball.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/fireball_smoke.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/explosion_up_add -shimmer.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/Explosion.material",
+		"/C/SVNs/Art/particles/monster_particles/nemesis_mods/fire_mod/fire_projectile/trail_atGold.material",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mods/fire_mod/fire_projectile/core_Trail.trl",
+		"/C/Users/Jackson/AppData/Roaming/Sublime Text 3/Packages/otNicifier/otNicifier.py",
+		"//grindserv/deleted_weekly/reddit.txt",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Effect.ot",
+		"/C/Users/Jackson/Desktop/Approvals/openFilePython.py",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mod/fire_projectile/core_Trail.trl",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_projectile/projectile.aoc",
+		"/C/SVNs/Bin/Client/Metadata/Effects/Spells/monsters_effects/nemesis_mods/fire_mod/fire_projectile/projectile.ao",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mod/fire_projectile/core_Start.pet",
+		"/C/SVNs/Bin/Client/Metadata/Particles/monster_effects/nemesis_mod/fire_projectile/core_effect.pet"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 182.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"\"\"Art/",
+			"\"\"A",
+			"\"\"",
+			"Art/Models/Effects/monster_effects/Nemesis_mods",
+			"Art/Models/Effects/monster_effects/nemesis_mods",
+			"rigFile",
+			"rootjt",
+			"loadJts",
+			"print",
+			"studiolibrary",
+			"studio",
+			"text",
+			"cmds",
+			"lava",
+			"Art/particles/monster_particles/nemesis_mod",
+			"ot",
+			"or",
+			"Art/particles/monster_particles/nemesis_mod",
+			"light_gradient",
+			"\"\"",
+			"fireball",
+			"Art/particles/monster_particles/nemesis_mod",
+			"Metadata/Particles/monster_effects/nemesis_mod",
+			"Art/Models/Effects/monster_effects/nemesis_mod",
+			"Art/particles/monster_particles/nemesis_mod/",
+			"Metadata/Particles/monster_effects/nemesis_mod",
+			"Art/particles/monster_particles/nemesis_mod",
+			"shockwave.mat",
+			"fire_mods/fire_mod",
+			"fire_mods/firemod",
+			"\"\"\"",
+			"Metadata\\Particles\\monster_effects\\nemesis_mods\\fire_mod\\explosion",
+			"Metadata/Particles/monster_effects/nemesis_mod",
+			"Art/particles/monster_particles/nemesis_mod",
+			"\"Art/particles/monster_particles/nemesis_mod",
+			"arg1",
+			"arg",
+			"pm",
+			"MasterUI",
+			"pathRed",
+			"cmds",
+			"Circle",
+			"Circlw",
+			"Circlr",
+			"str",
+			" /League_Bestiary/Einhar/transition/disappear",
+			"/ThronSpider1",
+			"`",
+			"cmds",
+			"os",
+			"cmds",
+			"dirList",
+			"return",
+			"Art/particles/monster_particles/League_Bestiary/spiker_minionMonster",
+			"\"Art/particles/monster_particles/League_Bestiary/Monkey_minionMonster/mortar/",
+			"segment_duration 0.63",
+			"vertexWorldPosition",
+			"a = ['Animations', 'once.mb', 'loop.mb', 'animations', 'loopnoint.mb']\nb = ['channel loopnoint.mb', 'emerge once.mb', 'idle loopnoint.mb', 'rig.mb', 'submerge once.mb']\n\nfor i in b:\n    trig = i.split(\" \")\n    if trig[1] in a:\n        pass\n    else:\n        print i\n",
+			"print",
+			"cmds",
+			"mantiCore/",
+			"mantiCore",
+			"weapon_effects",
+			"\\",
+			"\\\\",
+			"bottom6",
+			"model",
+			"2011",
+			"getParent",
+			"ground"
+		],
+		"highlight": false,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"mc",
+			"Art/particles/monster_particles/nemesis_mods/fire_mod",
+			"\"",
+			"Art/particles/monster_particles/nemesis_mods/fire_mod",
+			"Metadata/Particles/monster_effects/nemesis_mods/fire_mod",
+			"Art/Models/Effects/monster_effects/nemesis_mods/fire_mod\n",
+			"Art/particles/monster_particles/nemesis_mods/fire_mod/",
+			"Metadata/Particles/monster_effects/nemesis_mods/fire_mod",
+			"Art/particles/monster_particles/nemesis_mods/fire_mod",
+			"fire_mod",
+			"\"",
+			"Metadata/Particles/monster_effects/nemesis_mods/fire_mod/explosion",
+			"Metadata\\Particles\\monster_effects\\nemesis_mods\\fire_mod\\explosion",
+			"\"Art/particles/monster_particles/nemesis_mods/fire_mod",
+			"mc",
+			"Snap Pivot",
+			"pathRead",
+			"mc",
+			"/League_Bestiary/Einhar/transition/disappear",
+			" /League_Bestiary/Einhar/transition/disappear",
+			" ",
+			"mc",
+			"Art/particles/monster_particles/nemesis_mod/explosion",
+			"\"Art/particles/monster_particles/nemesis_mod/fire_projectile/",
+			"segment_duration 0.50",
+			"mc",
+			"manticore/textures/",
+			"manticore/textures",
+			"Character_FX",
+			"\\\\",
+			"\\",
+			"2018"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/Users/Jackson/Documents/skinnedArmour.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3206,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								3206
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content"
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/SVNs/Bin/Client/Metadata/Monsters/BloodElemental/BloodElemental.aoc",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5257,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4433,
+								4423
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content"
+							],
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 780.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 68.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 47.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "vfxTools.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 354.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 374.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 50.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 1
+	}
+}
